@@ -1,0 +1,36 @@
+{ ... }:
+{
+  programs.starship = {
+    enable = true;
+    settings = {
+      add_newline = true;
+
+      format = "$directory$git_branch$git_status$nix_shell$character";
+
+      character = {
+        success_symbol = "[❯](#b8bb26)";
+        error_symbol = "[❯](#fb4934)";
+      };
+
+      directory = {
+        style = "#83a598 bold";
+        truncation_length = 3;
+      };
+
+      git_branch = {
+        symbol = " ";
+        style = "#d3869b";
+      };
+
+      git_status = {
+        style = "#fabd2f";
+      };
+
+      nix_shell = {
+        symbol = " ";
+        style = "#8ec07c";
+        format = "[$symbol$state]($style) ";
+      };
+    };
+  };
+}
