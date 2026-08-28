@@ -16,8 +16,8 @@
       ll = "eza -la";
       la = "eza -la";
       cat = "bat";
-      nrs = "sudo nixos-rebuild switch --flake ~/.config/nixos#nixos";
-      nrb = "sudo nixos-rebuild build --flake ~/.config/nixos#nixos";
+      nrs = "sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)";
+      nrb = "sudo nixos-rebuild build --flake ~/.config/nixos#$(hostname)";
       nfu = "cd ~/.config/nixos && nix flake update && cd -";
     };
 

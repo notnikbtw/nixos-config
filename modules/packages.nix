@@ -13,6 +13,7 @@
     thunar
     vesktop
     obsidian
+    prismlauncher
 
     # Hyprland environment
     hyprlock
