@@ -1,10 +1,18 @@
 # NixOS + Hyprland dotfiles
 
-A modular NixOS configuration using flakes and home-manager, running Hyprland
+A modular, multi-host NixOS configuration using flakes and home-manager,
+running Hyprland (native Lua config) across a laptop and a desktop.
+
+## Hosts
+
+| Host      | Hardware                                          |
+|-----------|----------------------------------------------------|
+| `laptop`  | Lenovo IdeaPad 5 Pro 16ACH6 (AMD + NVIDIA PRIME)   |
+| `desktop` | ASUS PRIME B660-PLUS D4, i5-12600KF, RTX 3080, dual monitor |
 
 ## Stack
 
-- **WM:** Hyprland
+- **WM:** Hyprland (Lua config, `hl.bind` API)
 - **Bar:** Waybar
 - **Launcher:** Rofi
 - **Notifications:** Dunst
@@ -18,23 +26,32 @@ A modular NixOS configuration using flakes and home-manager, running Hyprland
 ## Structure
 
 ```
-.
 ├── flake.nix
 ├── flake.lock
-├── configuration.nix
-├── hardware-configuration.nix       # NOT in repo - gitignored, generate your own
-├── modules/
+├── hosts/
+│   ├── laptop/
+│   │   ├── configuration.nix
+│   │   ├── hardware-configuration.nix   # machine-specific, generated - don't hand
+│   │   └── gpu.nix                      # nixos-hardware profile, NVIDIA PRIME
+│   └── desktop/
+│       ├── configuration.nix
+│       ├── hardware-configuration.nix   # machine-specific, generated - don't hand
+│       └── gpu.nix                      # standalone NVIDIA, no PRIME
+├── modules/                              # shared across ALL hosts
 │   ├── nix.nix
 │   ├── boot.nix
-│   ├── networking.nix
+│   ├── networking.nix                    # no hostName here - set per-host in flake.nix
 │   ├── users.nix
-│   ├── desktop.nix                  # greetd, Hyprland, pipewire, fonts
-│   ├── programs.nix                 # steam, docker, thunar
-│   ├── packages.nix                 # systemwide packages
-│   └── laptop.nix                   # nixos-hardware profile, nvidia
+│   ├── desktop.nix                       # greetd, Hyprland, pipewire, fonts, dconf
+│   ├── programs.nix                      # docker, steam, thunar
+│   └── packages.nix
 └── home/
-    ├── home.nix                     # imports everything below
-    ├── hypr.nix + hypr/             # hyprland.lua, hypridle, hyprlock, wallpaper
+    ├── home.nix                          # imports everything below
+    ├── hosts/
+    │   ├── laptop.nix                    # host-specific home-manager overrides
+    │   └── desktop.nix
+    ├── hypr.nix + hypr/                  # hyprland.lua, hypridle, hyprlock, wallpaper
+    ├── hyprpaper.nix
     ├── waybar.nix + waybar/
     ├── rofi.nix + rofi/
     ├── dunst.nix + dunst/
@@ -42,15 +59,12 @@ A modular NixOS configuration using flakes and home-manager, running Hyprland
     ├── zsh.nix
     ├── tmux.nix
     ├── starship.nix
-    ├── theme.nix                    # GTK/Qt/cursor, Gruvbox
-    └── wallpaper.nix                # swww service
+    └── theme.nix                          # GTK/Qt/cursor, Gruvbox, dconf
 ```
 
 ## Prerequisites
 
-Nix with flakes enabled. On a fresh NixOS install, add to
-`/etc/nixos/configuration.nix` before first switch (or use the installer's
-flake support), or set in `nix.conf`:
+Nix with flakes enabled:
 
 ```
 experimental-features = nix-command flakes
@@ -58,50 +72,68 @@ experimental-features = nix-command flakes
 
 ## Installing on a new machine
 
-1. Generate your own hardware config
+If reusing this repo on genuinely different hardware, regenerate the hardware config rather than reusing an existing host's file:
+
 ```bash
-   sudo nixos-generate-config --show-hardware-config > hardware-configuration.nix
+sudo nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix
 ```
-2. Clone this repo to `~/.config/nixos`:
-```bash
+
+1. Clone the repo:
+   ```bash
    git clone <this-repo-url> ~/.config/nixos
-```
-3. Replace `hardware-configuration.nix` with the one generated in step 1.
-4. Update the LUKS UUID in `modules/boot.nix` to match your own disk
-   (find it with `blkid`).
-5. Point `/etc/nixos` at the repo:
-```bash
+   ```
+2. Generate hardware config for this machine:
+   ```bash
+   sudo nixos-generate-config --show-hardware-config > ~/.config/nixos/hosts/<hostname>/hardware-configuration.nix
+   ```
+   (create the `hosts/<hostname>/` folder first if it's a brand-new host,
+   with a `configuration.nix` and `gpu.nix` - copy an existing host's as a
+   starting point and adjust for the hardware)
+3. Add the file to git's index so the flake can see it (it stays gitignored
+   from being committed publicly, but Nix flakes only evaluate tracked
+   files):
+   ```bash
+   git add -f hosts/<hostname>/hardware-configuration.nix
+   ```
+4. Update the LUKS UUID in `hosts/<hostname>/configuration.nix` (or
+   `modules/boot.nix` if shared) to match your own disk - find it with
+   `blkid`.
+5. Register the host in `flake.nix` under `nixosConfigurations` if it's new.
+6. Point `/etc/nixos` at the repo:
+   ```bash
    sudo mv /etc/nixos /etc/nixos.bak
    sudo ln -s ~/.config/nixos /etc/nixos
-```
-6. Build:
-```bash
-   sudo nixos-rebuild switch --flake ~/.config/nixos#nixos
-```
+   ```
+7. Build:
+   ```bash
+   sudo nixos-rebuild switch --flake ~/.config/nixos#<hostname>
+   ```
 
 ## Day-to-day usage
 
-Aliases (defined in `home/zsh.nix`):
+Aliases (defined in `home/zsh.nix`, auto-detect the current host via
+`$(hostname)` - same commands work on both machines):
 
 | Alias | Does |
 |---|---|
-| `nrb` | Build the config without applying (dry check) |
-| `nrs` | Build and switch |
+| `nrb` | Build the config for this host without applying (dry check) |
+| `nrs` | Build and switch for this host |
 | `nfu` | `nix flake update` |
 
 Full commands, if not using the aliases:
 
 ```bash
-sudo nixos-rebuild build  --flake ~/.config/nixos#nixos
-sudo nixos-rebuild switch --flake ~/.config/nixos#nixos
+sudo nixos-rebuild build  --flake ~/.config/nixos#$(hostname)
+sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)
 ```
 
-Update dependencies (nixpkgs, home-manager, nixos-hardware):
+Update dependencies (nixpkgs, home-manager, nixos-hardware) - affects both
+hosts, since they share the same flake inputs:
 
 ```bash
 cd ~/.config/nixos
 nix flake update
-sudo nixos-rebuild switch --flake .#nixos
+nrs
 ```
 
 Roll back if something breaks:
