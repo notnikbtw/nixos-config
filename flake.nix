@@ -10,14 +10,16 @@
     };
 
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, ... }:
+  outputs = { self, nixpkgs, home-manager, nixos-hardware, llm-agents, ... }@inputs:
   let
     mkHost = { hostname, extraModules ? [], homeFile }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit nixos-hardware; };
+        specialArgs = { inherit inputs nixos-hardware; };
         modules = [
           ./hosts/${hostname}/configuration.nix
           ./hosts/${hostname}/hardware-configuration.nix
@@ -30,6 +32,7 @@
           ./modules/desktop.nix
           ./modules/programs.nix
           ./modules/packages.nix
+          ./modules/services.nix
 
           { networking.hostName = hostname; }
 
@@ -37,6 +40,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+            home-manager.extraSpecialArgs = { inherit inputs; };
             home-manager.users.nik = import homeFile;
           }
         ] ++ extraModules;

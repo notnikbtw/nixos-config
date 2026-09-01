@@ -1,8 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, inputs, ... }:
 {
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = (with pkgs; [
     # Apps
     firefox
+    telegram-desktop
     wget
     btop
     imv
@@ -19,6 +20,7 @@
     hyprlock
     hypridle
     hyprpaper
+    hyprpolkitagent
     waybar
     rofi
     dunst
@@ -50,15 +52,21 @@
     vscode
     go
     nodejs_22
+    python3
+    gcc
+    gnumake
     git
     neovim
     docker-compose
     postgresql
     antigravity
+    ollama
 
     adwaita-icon-theme
     papirus-icon-theme
     hicolor-icon-theme
-    bibata-cursors
-  ];
+  ]) ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
+    opencode
+    antigravity-cli
+  ]);
 }
