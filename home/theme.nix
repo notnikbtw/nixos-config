@@ -28,9 +28,7 @@
   qt = {
     enable = true;
     platformTheme.name = "gtk3";
-    style.name = "gtk2";
   };
-
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       gtk-theme = "Gruvbox-Dark-BL";
