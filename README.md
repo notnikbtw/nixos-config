@@ -13,53 +13,55 @@ running Hyprland (native Lua config) across a laptop and a desktop.
 ## Stack
 
 - **WM:** Hyprland (Lua config, `hl.bind` API)
-- **Bar:** Waybar
+- **Bar:** Waybar (host-specific configurations for laptop and desktop)
 - **Launcher:** Rofi
 - **Notifications:** Dunst
 - **Lock/idle:** Hyprlock + Hypridle
 - **Terminal:** Kitty
 - **Shell:** Zsh + Starship
 - **Multiplexer:** Tmux (auto-attached on new terminal)
+- **AI Stack:** Ollama (CUDA acceleration), `llm-agents.nix` (`opencode`, `antigravity-cli`), AI CLIs (`aichat`, `tgpt`, `gemini-cli`)
 - **Wallpaper:** hyprpaper
 - **Theme:** Gruvbox, consistent across GTK/Qt/terminal/bar
 
 ## Structure
 
 ```
-├── flake.nix
+├── flake.nix                             # Multi-host flake with inputs (nixpkgs, home-manager, nixos-hardware, llm-agents)
 ├── flake.lock
 ├── hosts/
 │   ├── laptop/
 │   │   ├── configuration.nix
-│   │   ├── hardware-configuration.nix   # machine-specific, generated - don't hand
-│   │   └── gpu.nix                      # nixos-hardware profile, NVIDIA PRIME
+│   │   ├── hardware-configuration.nix   # Machine-specific LUKS & disk setup
+│   │   └── gpu.nix                      # Hybrid AMD + NVIDIA PRIME offload & power management
 │   └── desktop/
 │       ├── configuration.nix
-│       ├── hardware-configuration.nix   # machine-specific, generated - don't hand
-│       └── gpu.nix                      # standalone NVIDIA, no PRIME
-├── modules/                              # shared across ALL hosts
+│       ├── hardware-configuration.nix   # Machine-specific LUKS & disk setup
+│       └── gpu.nix                      # Standalone NVIDIA GPU setup
+├── modules/                              # Shared system modules across ALL hosts
 │   ├── nix.nix
-│   ├── boot.nix
-│   ├── networking.nix                    # no hostName here - set per-host in flake.nix
-│   ├── users.nix
-│   ├── desktop.nix                       # greetd, Hyprland, pipewire, fonts, dconf
-│   ├── programs.nix                      # docker, steam, thunar
-│   └── packages.nix
+│   ├── boot.nix                          # Generic systemd-boot loader
+│   ├── networking.nix                    # NetworkManager, timezones & XKB locales
+│   ├── users.nix                         # User accounts & groups
+│   ├── desktop.nix                       # Hyprland, Greetd, Pipewire, Polkit & XDG Portals
+│   ├── programs.nix                      # Docker, Steam, Thunar
+│   ├── packages.nix                      # System packages & llm-agents tools
+│   └── services.nix                      # Local AI services (Ollama CUDA)
 └── home/
-    ├── home.nix                          # imports everything below
+    ├── home.nix                          # Base Home Manager entrypoint
     ├── hosts/
-    │   ├── laptop.nix                    # host-specific home-manager overrides
-    │   └── desktop.nix
+    │   ├── laptop.nix                    # Laptop home-manager config & laptop Waybar
+    │   └── desktop.nix                   # Desktop home-manager config & desktop Waybar
     ├── hypr.nix + hypr/                  # hyprland.lua, hypridle, hyprlock, wallpaper
     ├── hyprpaper.nix
-    ├── waybar.nix + waybar/
+    ├── waybar.nix + waybar/              # Split waybar configs (config-laptop.jsonc, config-desktop.jsonc)
     ├── rofi.nix + rofi/
     ├── dunst.nix + dunst/
     ├── kitty.nix
-    ├── zsh.nix
+    ├── zsh.nix                           # Zsh, aliases, secrets loader
     ├── tmux.nix
     ├── starship.nix
-    └── theme.nix                          # GTK/Qt/cursor, Gruvbox, dconf
+    └── theme.nix                         # GTK/Qt/cursor, Gruvbox, dconf
 ```
 
 ## Prerequisites
