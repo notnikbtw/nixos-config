@@ -47,6 +47,9 @@
     fd
     fastfetch
     hyfetch
+    fortune
+    cowsay
+    cbonsai
 
     # Dev environment
     vscode
