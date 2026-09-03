@@ -5,8 +5,13 @@
     settings = {
       ipc = "on";
       splash = false;
-      preload = [ "~/.config/hypr/wallpaper.png" ];
-      wallpaper = [ ",~/.config/hypr/wallpaper.png" ];
+      wallpaper = [
+        {
+          monitor = "";
+          path = "~/.config/hypr/wallpaper.png";
+          fit_mode = "cover";
+        }
+      ];
     };
   };
 }
