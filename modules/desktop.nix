@@ -29,8 +29,23 @@
 
   fonts = {
     enableDefaultPackages = true;
-    packages = with pkgs; [ nerd-fonts.jetbrains-mono ];
-    fontconfig.enable = true;
+    packages = with pkgs; [
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.symbols-only
+      font-awesome
+      noto-fonts
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
+    ];
+    fontconfig = {
+      enable = true;
+      defaultFonts = {
+        monospace = [ "JetBrainsMono Nerd Font" "Symbols Nerd Font" "Noto Color Emoji" ];
+        sansSerif = [ "DejaVu Sans" "Symbols Nerd Font" "Noto Color Emoji" ];
+        serif = [ "DejaVu Serif" "Symbols Nerd Font" "Noto Color Emoji" ];
+        emoji = [ "Noto Color Emoji" ];
+      };
+    };
   };
 
   xdg.portal = {

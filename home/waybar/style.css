@@ -13,7 +13,10 @@
 
 window#waybar {
     background-color: #282828;
-    border: 1px solid #3c3836;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
 }
 
 #workspaces,

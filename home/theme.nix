@@ -43,4 +43,14 @@
       color-scheme = "prefer-dark";
     };
   };
+
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts = {
+      monospace = [ "JetBrainsMono Nerd Font" "Symbols Nerd Font" "Noto Color Emoji" ];
+      sansSerif = [ "DejaVu Sans" "Symbols Nerd Font" "Noto Color Emoji" ];
+      serif = [ "DejaVu Serif" "Symbols Nerd Font" "Noto Color Emoji" ];
+      emoji = [ "Noto Color Emoji" ];
+    };
+  };
 }
