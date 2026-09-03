@@ -64,6 +64,7 @@
     postgresql
     antigravity
     ollama
+    act
 
     adwaita-icon-theme
     papirus-icon-theme
