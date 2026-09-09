@@ -4,9 +4,8 @@
 
   imports = [
     ./hypr.nix
-    ./waybar.nix
+    ./quickshell.nix
     ./rofi.nix
-    ./dunst.nix
     ./kitty.nix
     ./zsh.nix
     ./tmux.nix
