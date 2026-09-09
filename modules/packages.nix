@@ -15,26 +15,36 @@
     vesktop
     obsidian
     prismlauncher
+    libreoffice
 
     # Hyprland environment
     hyprlock
     hypridle
     hyprpaper
     hyprpolkitagent
-    waybar
+    quickshell
     rofi
-    dunst
+    walker
+    libnotify
     wl-clipboard
     grim
     slurp
+    swappy
+    wl-screenrec
+    wf-recorder
+    tesseract
+    wtype
     cliphist
     hyprpicker
+    hyprshade
     brightnessctl
+    playerctl
     networkmanagerapplet
+    blueman
     pavucontrol
     wireplumber
-    swappy
     file-roller
+    swayosd
 
     # Terminal
     zsh
@@ -50,6 +60,8 @@
     fortune
     cowsay
     cbonsai
+    zoxide
+    fzf
 
     # Dev environment
     vscode
@@ -65,6 +77,7 @@
     antigravity
     ollama
     act
+    llmfit
 
     adwaita-icon-theme
     papirus-icon-theme
