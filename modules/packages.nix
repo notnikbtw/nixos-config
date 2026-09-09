@@ -22,6 +22,7 @@
     hypridle
     hyprpaper
     hyprpolkitagent
+    hyprsunset
     quickshell
     rofi
     walker
@@ -44,7 +45,6 @@
     pavucontrol
     wireplumber
     file-roller
-    swayosd
 
     # Terminal
     zsh

@@ -41,10 +41,14 @@ PanelWindow {
             anchors.centerIn: parent
             spacing: 8
 
+            NightLightWidget {}
+
             ScreenRecordWidget {
                 id: recordWidget
                 screenName: barWindow.screen ? barWindow.screen.name : ""
             }
+
+            PrivacyWidget {}
 
             Clock {
                 id: centerClock
