@@ -30,6 +30,7 @@ Item {
         let scriptPath = Quickshell.shellDir + "/scripts/record-toggle.sh"
         Quickshell.execDetached(["bash", scriptPath, mon || ""])
         checkTimer.restart()
+        secondaryCheckTimer.restart()
     }
 
     function openFolder() {
@@ -38,7 +39,15 @@ Item {
 
     Timer {
         id: checkTimer
-        interval: 250
+        interval: 350
+        running: false
+        repeat: false
+        onTriggered: statusChecker.running = true
+    }
+
+    Timer {
+        id: secondaryCheckTimer
+        interval: 800
         running: false
         repeat: false
         onTriggered: statusChecker.running = true
