@@ -1,0 +1,14 @@
+* {
+    bg0: #1f1f28;
+    bg1: #2a2a37;
+    fg1: #dcd7ba;
+    fg2: #c8c093;
+    yellow: #c0a36e;
+    orange: #ffa066;
+    gray: #727169;
+    accent: #7e9cd8;
+    foreground: @fg1;
+    background: @bg0;
+    normal-foreground: @fg1;
+    normal-background: @bg0;
+}

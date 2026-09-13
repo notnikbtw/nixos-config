@@ -1,0 +1,22 @@
+add_newline = true
+format = "$directory$git_branch$git_status$nix_shell$character"
+
+[character]
+success_symbol = "[❯](#98bb6c)"
+error_symbol = "[❯](#c34043)"
+
+[directory]
+style = "#7e9cd8 bold"
+truncation_length = 3
+
+[git_branch]
+symbol = " "
+style = "#957fb8"
+
+[git_status]
+style = "#e5c07b"
+
+[nix_shell]
+symbol = " "
+style = "#7aa89f"
+format = "[$symbol$state]($style) "

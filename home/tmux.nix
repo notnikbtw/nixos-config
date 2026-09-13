@@ -10,12 +10,7 @@
     terminal = "screen-256color";
 
     extraConfig = ''
-      set -g status-bg "#282828"
-      set -g status-fg "#ebdbb2"
-      set -g status-left "#[fg=#fabd2f,bold] #S "
-      set -g status-right "#[fg=#83a598] %H:%M "
-
-      set -g window-status-current-style "fg=#282828,bg=#fabd2f,bold"
+      source-file ~/.config/themes/current/tmux.conf
 
       bind | split-window -h -c "#{pane_current_path}"
       bind - split-window -v -c "#{pane_current_path}"

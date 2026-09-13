@@ -22,6 +22,9 @@
     };
 
     initContent = ''
+    export STARSHIP_CONFIG="$HOME/.config/themes/current/starship.toml"
+    [ -f "$HOME/.config/themes/current/shell.sh" ] && source "$HOME/.config/themes/current/shell.sh"
+
     if [[ -z "$TMUX" && -z "$VSCODE_INJECTION" && -z "$SSH_CONNECTION" && "$TERM_PROGRAM" != "vscode" ]]; then
         tmux attach -t main || tmux new -s main
     fi

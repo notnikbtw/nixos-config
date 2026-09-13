@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Example theme hook called on theme changes
+# Argument $1 is the active theme name (gruvbox, kanagawa, tokyonight, miasma)
+THEME="$1"
+
+# Add custom application integration commands here.
+# For example:
+# - Neovim / Helix colorscheme reloads
+# - Discord / Vesktop custom CSS injection
+# - Obsidian vault theme switching

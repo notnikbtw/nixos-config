@@ -10,7 +10,7 @@
     ./zsh.nix
     ./tmux.nix
     ./starship.nix
-    ./hyprpaper.nix
     ./theme.nix
+    ./btop.nix
   ];
 }
