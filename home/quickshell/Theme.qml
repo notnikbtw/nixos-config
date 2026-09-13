@@ -27,9 +27,9 @@ QtObject {
     readonly property color aqua:   "#8ec07c"
     readonly property color orange: "#fe8019"
 
-    readonly property string fontMono: "JetBrainsMono Nerd Font"
-    readonly property int fontSizeNormal: 12
-    readonly property int fontSizeSmall: 10
+    readonly property string fontMono: FontConfig.family
+    readonly property int fontSizeNormal: FontConfig.sizeNormal
+    readonly property int fontSizeSmall: FontConfig.sizeSmall
     readonly property int barHeight: 32
     readonly property int radius: 2
 }

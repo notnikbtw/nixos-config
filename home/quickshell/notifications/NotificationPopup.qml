@@ -73,7 +73,7 @@ PanelWindow {
                         Text {
                             text: (card.modelData.appName && card.modelData.appName.length > 0)
                                   ? card.modelData.appName
-                                  : "Сповіщення"
+                                  : "Notification"
                             font.family: Theme.fontMono
                             font.pixelSize: Theme.fontSizeSmall
                             font.bold: true

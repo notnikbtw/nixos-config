@@ -54,7 +54,7 @@ RowLayout {
         Quickshell.execDetached([
             "sh",
             "-c",
-            "powerprofilesctl set " + next + " && notify-send -i preferences-system-power 'Режим живлення' 'Встановлено профіль: " + next + "'"
+            "powerprofilesctl set " + next + " && notify-send -i preferences-system-power 'Power Profile' 'Profile set to: " + next + "'"
         ])
     }
 

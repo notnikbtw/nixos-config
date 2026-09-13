@@ -15,7 +15,6 @@ Item {
     implicitWidth: row.implicitWidth + 12
     implicitHeight: 22
 
-    // Перевірка раз на 2 секунди
     Timer {
         interval: 2000
         running: true
@@ -27,7 +26,6 @@ Item {
         }
     }
 
-    // Шукає реальний активний потік захоплення аудіо в PipeWire
     Process {
         id: checkMic
         command: ["sh", "-c", "pw-cli ls Node 2>/dev/null | grep -F '\"Stream/Input/Audio\"' >/dev/null && echo 'on' || echo 'off'"]
@@ -38,7 +36,6 @@ Item {
         }
     }
 
-    // Перевірка вебкамери через зайняті пристрої ядра Linux
     Process {
         id: checkCam
         command: ["sh", "-c", "fuser /dev/video* >/dev/null 2>&1 && echo 'on' || echo 'off'"]

@@ -79,7 +79,7 @@ PopupWindow {
                 Layout.alignment: Qt.AlignHCenter
 
                 Repeater {
-                    model: ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
+                    model: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"]
                     delegate: Text {
                         text: modelData
                         font.family: Theme.fontMono
