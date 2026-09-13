@@ -15,6 +15,7 @@ hl.config({
     "QT_SCALE_FACTOR,1",
     "QT_QPA_PLATFORM,wayland",
     "QT_QPA_PLATFORMTHEME,gtk3",
+    "STARSHIP_CONFIG," .. os.getenv("HOME") .. "/.config/themes/current/starship.toml",
   }
 })
 
