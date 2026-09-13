@@ -13,13 +13,15 @@ window {
     border: 2px;
     border-color: @orange;
     border-radius: 1px;
-    width: 480px;
+    width: 820px;
     padding: 16px;
+    location: center;
+    anchor: center;
 }
 
 mainbox {
     children: [ inputbar, listview ];
-    spacing: 10px;
+    spacing: 12px;
 }
 
 inputbar {
@@ -32,84 +34,73 @@ inputbar {
 
 prompt {
     text-color: @yellow;
+    font: "JetBrainsMono Nerd Font Bold 11";
 }
 
 entry {
-    placeholder: "Search...";
+    placeholder: "Search wallpaper...";
     placeholder-color: @gray;
     text-color: @fg1;
-    cursor: text;
 }
 
 listview {
-    lines:     8;
-    spacing:   4px;
+    columns: 3;
+    lines: 2;
+    cycle: true;
+    dynamic: true;
+    layout: vertical;
+    flow: horizontal;
+    spacing: 12px;
     scrollbar: false;
 }
 
 element {
-    padding: 6px 10px;
+    orientation: vertical;
+    padding: 8px;
+    border: 2px;
+    border-color: transparent;
     border-radius: 1px;
-    background-color: transparent;
+    background-color: @bg1;
     text-color: @fg1;
     cursor: pointer;
 }
 
 element normal.normal {
-    background-color: transparent;
+    background-color: @bg1;
+    border-color: transparent;
     text-color: @fg1;
 }
 
-element normal.urgent {
-    background-color: @bg0;
-    text-color: @orange;
-}
-
-element normal.active {
-    background-color: @bg0;
-    text-color: @yellow;
+element alternate.normal {
+    background-color: @bg1;
+    border-color: transparent;
+    text-color: @fg1;
 }
 
 element selected.normal {
     background-color: @bg1;
+    border-color: @yellow;
     text-color: @yellow;
 }
 
-element selected.urgent {
+element selected.alternate {
     background-color: @bg1;
-    text-color: @orange;
-}
-
-element selected.active {
-    background-color: @bg1;
+    border-color: @yellow;
     text-color: @yellow;
-}
-
-element alternate.normal {
-    background-color: transparent;
-    text-color: @fg1;
-}
-
-element alternate.urgent {
-    background-color: @bg0;
-    text-color: @orange;
-}
-
-element alternate.active {
-    background-color: @bg0;
-    text-color: @yellow;
-}
-
-element-text {
-    vertical-align: 0.5;
-    background-color: transparent;
-    text-color: inherit;
-    cursor: inherit;
 }
 
 element-icon {
-    background-color: transparent;
-    size: 20px;
-    margin: 0 8px 0 0;
+    size: 130px;
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    border-radius: 1px;
+    cursor: inherit;
+}
+
+element-text {
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    margin: 6px 0 0 0;
+    text-color: inherit;
     cursor: inherit;
 }

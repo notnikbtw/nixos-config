@@ -13,8 +13,10 @@ window {
     border: 2px;
     border-color: @orange;
     border-radius: 1px;
-    width: 480px;
-    padding: 16px;
+    width: 400px;
+    padding: 14px;
+    location: center;
+    anchor: center;
 }
 
 mainbox {
@@ -32,23 +34,26 @@ inputbar {
 
 prompt {
     text-color: @yellow;
+    font: "JetBrainsMono Nerd Font Bold 12";
 }
 
 entry {
     placeholder: "Search...";
     placeholder-color: @gray;
     text-color: @fg1;
-    cursor: text;
 }
 
 listview {
-    lines:     8;
-    spacing:   4px;
+    lines: 7;
+    spacing: 4px;
     scrollbar: false;
+    cycle: true;
+    dynamic: true;
+    layout: vertical;
 }
 
 element {
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 1px;
     background-color: transparent;
     text-color: @fg1;
@@ -60,27 +65,7 @@ element normal.normal {
     text-color: @fg1;
 }
 
-element normal.urgent {
-    background-color: @bg0;
-    text-color: @orange;
-}
-
-element normal.active {
-    background-color: @bg0;
-    text-color: @yellow;
-}
-
 element selected.normal {
-    background-color: @bg1;
-    text-color: @yellow;
-}
-
-element selected.urgent {
-    background-color: @bg1;
-    text-color: @orange;
-}
-
-element selected.active {
     background-color: @bg1;
     text-color: @yellow;
 }
@@ -90,26 +75,9 @@ element alternate.normal {
     text-color: @fg1;
 }
 
-element alternate.urgent {
-    background-color: @bg0;
-    text-color: @orange;
-}
-
-element alternate.active {
-    background-color: @bg0;
-    text-color: @yellow;
-}
-
 element-text {
     vertical-align: 0.5;
     background-color: transparent;
     text-color: inherit;
-    cursor: inherit;
-}
-
-element-icon {
-    background-color: transparent;
-    size: 20px;
-    margin: 0 8px 0 0;
     cursor: inherit;
 }
