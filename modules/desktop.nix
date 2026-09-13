@@ -31,6 +31,8 @@
     enableDefaultPackages = true;
     packages = with pkgs; [
       nerd-fonts.jetbrains-mono
+      nerd-fonts.fira-code
+      nerd-fonts.hack
       nerd-fonts.symbols-only
       font-awesome
       noto-fonts

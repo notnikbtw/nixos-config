@@ -20,12 +20,13 @@
     # Hyprland environment
     hyprlock
     hypridle
-    hyprpaper
     hyprpolkitagent
+    awww
+    (pkgs.writeShellScriptBin "swww" ''exec ${pkgs.awww}/bin/awww "$@"'')
+    (pkgs.writeShellScriptBin "swww-daemon" ''exec ${pkgs.awww}/bin/awww-daemon "$@"'')
     hyprsunset
     quickshell
     rofi
-    walker
     libnotify
     wl-clipboard
     grim
@@ -42,6 +43,7 @@
     playerctl
     networkmanagerapplet
     blueman
+    syncthingtray
     pavucontrol
     wireplumber
     file-roller
