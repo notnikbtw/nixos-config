@@ -13,16 +13,15 @@ running Hyprland (native Lua config) across a laptop and a desktop.
 ## Stack
 
 - **WM:** Hyprland (Lua config, `hl.bind` API)
-- **Bar:** Waybar (host-specific configurations for laptop and desktop)
-- **Launcher:** Rofi
-- **Notifications:** Dunst
+- **Bar & OSD:** Quickshell (status bar, notifications, and built-in volume/brightness OSD)
+- **Launcher:** Rofi (drun, window switcher, powermenu, theme switcher, wallpaper switcher, control hub)
 - **Lock/idle:** Hyprlock + Hypridle
 - **Terminal:** Kitty
 - **Shell:** Zsh + Starship
 - **Multiplexer:** Tmux (auto-attached on new terminal)
 - **AI Stack:** Ollama (CUDA acceleration), `llm-agents.nix` (`opencode`, `antigravity-cli`), AI CLIs (`aichat`, `tgpt`, `gemini-cli`)
-- **Wallpaper:** hyprpaper
-- **Theme:** Gruvbox, consistent across GTK/Qt/terminal/bar
+- **Wallpaper:** awww (animated wallpaper daemon with per-theme galleries)
+- **Theme:** Dynamic system-wide theming (Gruvbox, Kanagawa, TokyoNight, Miasma) across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland
 
 ## Structure
 
