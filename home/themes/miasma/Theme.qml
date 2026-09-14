@@ -25,11 +25,12 @@ QtObject {
     readonly property color blue:   "#68878f"
     readonly property color purple: "#8c788a"
     readonly property color aqua:   "#6a8f7c"
+    readonly property color accent: green
     readonly property color orange: "#bb7757"
 
     readonly property string fontMono: FontConfig.family
     readonly property int fontSizeNormal: FontConfig.sizeNormal
     readonly property int fontSizeSmall: FontConfig.sizeSmall
     readonly property int barHeight: 32
-    readonly property int radius: 2
+    readonly property int radius: 0
 }

@@ -33,7 +33,7 @@ RowLayout {
                     anchors.centerIn: parent
                     width: 8
                     height: 8
-                    radius: 1
+                    radius: 0
                     color: Theme.fgHigh
                     visible: wsBtn.isFocused
                 }

@@ -38,7 +38,7 @@ Item {
 
     Process {
         id: checkCam
-        command: ["sh", "-c", "fuser /dev/video* >/dev/null 2>&1 && echo 'on' || echo 'off'"]
+        command: ["sh", "-c", "pw-cli ls Node 2>/dev/null | grep -F '\"Stream/Input/Video\"' >/dev/null && echo 'on' || echo 'off'"]
         stdout: SplitParser {
             onRead: data => {
                 root.camActive = (data.trim() === "on")

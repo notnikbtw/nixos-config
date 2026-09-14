@@ -120,7 +120,7 @@ PopupWindow {
 
                         Layout.preferredWidth: 24
                         Layout.preferredHeight: 24
-                        radius: 2
+                        radius: Theme.radius
                         color: isToday ? Theme.fgHigh : "transparent"
 
                         Text {
