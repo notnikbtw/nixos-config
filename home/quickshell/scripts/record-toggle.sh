@@ -40,31 +40,52 @@ if pgrep -x "wf-recorder" >/dev/null 2>&1 || pgrep -x "wl-screenrec" >/dev/null 
     exit 0
 fi
 
-MONITOR="$1"
-if [ -z "$MONITOR" ] && command -v hyprctl >/dev/null 2>&1; then
-    if command -v jq >/dev/null 2>&1; then
-        MONITOR=$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | select(.focused) | .name')
-    elif command -v python3 >/dev/null 2>&1; then
-        MONITOR=$(hyprctl monitors -j 2>/dev/null | python3 -c "import sys, json; data = json.load(sys.stdin); print(next((m['name'] for m in data if m.get('focused')), data[0]['name'] if data else 'DP-1'))" 2>/dev/null)
+MODE="${1:-fullscreen}"
+GEOMETRY=""
+MONITOR=""
+
+if [[ "$MODE" == "region" || "$MODE" == "area" ]]; then
+    if ! command -v slurp >/dev/null 2>&1; then
+        notify-send -u critical -i dialog-error "Screen Recording" "slurp is required for region recording"
+        exit 1
     fi
-fi
-if [ -z "$MONITOR" ]; then
-    MONITOR="DP-1"
+    GEOMETRY=$(slurp 2>/dev/null || true)
+    if [[ -z "$GEOMETRY" ]]; then
+        exit 0
+    fi
+else
+    if [[ "$MODE" != "fullscreen" && "$MODE" != "" ]]; then
+        MONITOR="$MODE"
+    fi
+    if [ -z "$MONITOR" ] && command -v hyprctl >/dev/null 2>&1; then
+        if command -v jq >/dev/null 2>&1; then
+            MONITOR=$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | select(.focused) | .name')
+        fi
+    fi
+    if [ -z "$MONITOR" ]; then
+        MONITOR="DP-1"
+    fi
 fi
 
 FILENAME="$TARGET_DIR/recording_$(date +%Y-%m-%d_%H-%M-%S).mp4"
 echo "$FILENAME" > "$LOCK_FILE"
 
-# On NVIDIA Hyprland systems, wl-screenrec does not support block-linear buffer modifiers,
-# making wf-recorder the preferred and most reliable tool.
-# Specify -p pixel_format=yuv420p for full compatibility with browsers, Discord, and media players.
+# Prefer wf-recorder for full NVIDIA buffer modifier support
 if command -v wf-recorder >/dev/null 2>&1; then
-    wf-recorder -o "$MONITOR" -p pixel_format=yuv420p -f "$FILENAME" < /dev/null >/tmp/wf-recorder.log 2>&1 &
+    if [[ -n "$GEOMETRY" ]]; then
+        wf-recorder -g "$GEOMETRY" -p pixel_format=yuv420p -f "$FILENAME" < /dev/null >/tmp/wf-recorder.log 2>&1 &
+    else
+        wf-recorder -o "$MONITOR" -p pixel_format=yuv420p -f "$FILENAME" < /dev/null >/tmp/wf-recorder.log 2>&1 &
+    fi
     REC_PID=$!
     disown "$REC_PID" 2>/dev/null
     sleep 0.5
     if kill -0 "$REC_PID" 2>/dev/null; then
-        notify-send -i camera-video "Screen Recording" "Started recording on $MONITOR (wf-recorder)"
+        if [[ -n "$GEOMETRY" ]]; then
+            notify-send -i camera-video "Screen Recording" "Started recording selected region"
+        else
+            notify-send -i camera-video "Screen Recording" "Started recording on $MONITOR"
+        fi
         exit 0
     else
         rm -f "$LOCK_FILE" "$FILENAME"
@@ -75,12 +96,16 @@ if command -v wf-recorder >/dev/null 2>&1; then
 fi
 
 if command -v wl-screenrec >/dev/null 2>&1; then
-    wl-screenrec --output "$MONITOR" -f "$FILENAME" < /dev/null >/tmp/wl-screenrec.log 2>&1 &
+    if [[ -n "$GEOMETRY" ]]; then
+        wl-screenrec -g "$GEOMETRY" -f "$FILENAME" < /dev/null >/tmp/wl-screenrec.log 2>&1 &
+    else
+        wl-screenrec --output "$MONITOR" -f "$FILENAME" < /dev/null >/tmp/wl-screenrec.log 2>&1 &
+    fi
     REC_PID=$!
     disown "$REC_PID" 2>/dev/null
     sleep 0.5
     if kill -0 "$REC_PID" 2>/dev/null; then
-        notify-send -i camera-video "Screen Recording" "Started recording on $MONITOR (wl-screenrec)"
+        notify-send -i camera-video "Screen Recording" "Started recording (wl-screenrec)"
         exit 0
     else
         rm -f "$LOCK_FILE" "$FILENAME"

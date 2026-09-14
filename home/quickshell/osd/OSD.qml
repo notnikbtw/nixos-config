@@ -106,9 +106,9 @@ PanelWindow {
         showOSD()
     }
 
-    function triggerMic() {
+    function triggerMicManual(isMuted: bool) {
         osdType = "mic"
-        if (sourceMuted) {
+        if (isMuted) {
             osdIcon = "󰍭"
             osdTitle = "Microphone"
             osdValue = "Muted"
@@ -122,6 +122,10 @@ PanelWindow {
             osdColor = Theme.green
         }
         showOSD()
+    }
+
+    function triggerMic() {
+        triggerMicManual(sourceMuted)
     }
 
     function triggerBrightness(percent: int) {
@@ -229,6 +233,11 @@ PanelWindow {
         function showNumLock(state: string): void {
             osdWindow.triggerNumLock(state)
         }
+
+        function showMic(state: string): void {
+            let isMuted = (state === "muted" || state === "1" || state === "true")
+            osdWindow.triggerMicManual(isMuted)
+        }
     }
 
     Rectangle {
@@ -237,7 +246,7 @@ PanelWindow {
         color: Theme.bg0
         border.color: Theme.bg3
         border.width: 1
-        radius: Theme.radius * 3
+        radius: Theme.radius
         opacity: 0
 
         ColumnLayout {
@@ -284,7 +293,7 @@ PanelWindow {
                 Layout.fillWidth: true
                 height: 4
                 color: Theme.bg2
-                radius: 2
+                radius: Theme.radius
 
                 Rectangle {
                     anchors.left: parent.left
@@ -292,7 +301,7 @@ PanelWindow {
                     anchors.bottom: parent.bottom
                     width: Math.min(parent.width, Math.max(0, parent.width * osdWindow.osdProgress))
                     color: osdWindow.osdColor
-                    radius: 2
+                    radius: Theme.radius
 
                     Behavior on width {
                         NumberAnimation {

@@ -102,7 +102,7 @@ Item {
             anchors.centerIn: parent
             width: 8
             height: 8
-            radius: 4
+            radius: 0
             color: Theme.red
             visible: root.isRecording
         }

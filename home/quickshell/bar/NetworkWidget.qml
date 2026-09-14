@@ -6,8 +6,8 @@ import ".."
 
 Item {
     id: root
-    implicitWidth: netRow.implicitWidth
-    implicitHeight: netRow.implicitHeight
+    implicitWidth: netRow.implicitWidth + 8
+    implicitHeight: 24
 
     property string iface: ""
     property bool isConnected: iface !== "" && iface !== "none"
@@ -40,8 +40,21 @@ Item {
 
     readonly property color netColor: isConnected ? Theme.blue : Theme.red
 
+    NetworkPopup {
+        id: netPopup
+        anchor.item: root
+        visible: false
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        radius: Theme.radius
+        color: (mouseArea.containsMouse || netPopup.visible) ? Theme.bg1 : "transparent"
+    }
+
     RowLayout {
         id: netRow
+        anchors.centerIn: parent
         spacing: 4
 
         Text {
@@ -60,8 +73,17 @@ Item {
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        onClicked: Quickshell.execDetached(["nm-connection-editor"])
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onClicked: mouse => {
+            if (mouse.button === Qt.LeftButton) {
+                netPopup.visible = !netPopup.visible
+            } else if (mouse.button === Qt.RightButton) {
+                Quickshell.execDetached(["nm-connection-editor"])
+            }
+        }
     }
 }

@@ -31,7 +31,7 @@ PanelWindow {
             anchors.left: parent.left
             anchors.leftMargin: 10
             anchors.verticalCenter: parent.verticalCenter
-            spacing: 6
+            spacing: 8
 
             Workspaces {}
         }
@@ -43,8 +43,9 @@ PanelWindow {
 
             NightLightWidget {}
 
+            StayAwakeWidget {}
+
             ScreenRecordWidget {
-                id: recordWidget
                 screenName: barWindow.screen ? barWindow.screen.name : ""
             }
 
@@ -69,6 +70,8 @@ PanelWindow {
             BatteryWidget {}
 
             AudioWidget {}
+
+            BluetoothWidget {}
 
             NetworkWidget {}
 

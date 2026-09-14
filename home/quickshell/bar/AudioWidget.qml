@@ -6,8 +6,8 @@ import ".."
 
 Item {
     id: root
-    implicitWidth: audioRow.implicitWidth
-    implicitHeight: audioRow.implicitHeight
+    implicitWidth: audioRow.implicitWidth + 8
+    implicitHeight: 24
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]
@@ -25,8 +25,21 @@ Item {
         return "󰕾"
     }
 
+    AudioPopup {
+        id: audioPopup
+        anchor.item: root
+        visible: false
+    }
+
+    Rectangle {
+        anchors.fill: parent
+        radius: Theme.radius
+        color: (mouseArea.containsMouse || audioPopup.visible) ? Theme.bg1 : "transparent"
+    }
+
     RowLayout {
         id: audioRow
+        anchors.centerIn: parent
         spacing: 4
 
         Text {
@@ -45,16 +58,18 @@ Item {
     }
 
     MouseArea {
+        id: mouseArea
         anchors.fill: parent
+        hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: mouse => {
             if (mouse.button === Qt.LeftButton) {
+                audioPopup.visible = !audioPopup.visible
+            } else if (mouse.button === Qt.RightButton) {
                 if (root.sink && root.sink.audio) {
                     root.sink.audio.muted = !root.sink.audio.muted
                 }
-            } else if (mouse.button === Qt.RightButton) {
-                Quickshell.execDetached(["pavucontrol"])
             }
         }
         onWheel: wheel => {
