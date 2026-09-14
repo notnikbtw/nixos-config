@@ -29,4 +29,13 @@
     source = ./rofi/font-switcher.sh;
     executable = true;
   };
+  xdg.configFile."rofi/keybinds.sh" = {
+    source = ./rofi/keybinds.sh;
+    executable = true;
+  };
+  xdg.configFile."rofi/reminder.sh" = {
+    source = ./rofi/reminder.sh;
+    executable = true;
+  };
 }
+

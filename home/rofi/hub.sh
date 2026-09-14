@@ -97,7 +97,7 @@ menu_settings() {
 # Main Menu: Control Hub
 main_menu() {
     while true; do
-        local options="󰉼  Customization\n  Settings\n󰅍  Clipboard History\n󰹑  Take Screenshot\n  Power Menu"
+        local options="󰉼  Customization\n  Settings\n󰌌  Shortcuts & Keybinds\n󰔛  Reminders & Pomodoro\n󰅍  Clipboard History\n󰹑  Take Screenshot\n  Power Menu"
         local chosen
         chosen="$(echo -e "$options" | $ROFI_CMD -p "Hub")"
 
@@ -107,6 +107,14 @@ main_menu() {
                 ;;
             *"Settings"*)
                 menu_settings
+                ;;
+            *"Shortcuts"*)
+                "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/keybinds.sh"
+                exit 0
+                ;;
+            *"Reminders"*)
+                "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/reminder.sh"
+                exit 0
                 ;;
             *"Clipboard"*)
                 cliphist list | rofi -dmenu -p "Clipboard" | cliphist decode | wl-copy
