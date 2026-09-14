@@ -10,19 +10,35 @@ local wallpaperNext     = os.getenv("HOME") .. "/.config/rofi/wallpaper-next.sh"
 local hubMenu           = os.getenv("HOME") .. "/.config/rofi/hub.sh"
 local brightnessScript  = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-brightness.sh"
 local capslockScript    = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-capslock.sh"
+local micScript         = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-mic.sh"
+local colorPickerScript = os.getenv("HOME") .. "/.config/hypr/scripts/color-picker.sh"
+local ocrScript         = os.getenv("HOME") .. "/.config/hypr/scripts/ocr-extract.sh"
+local keybindsScript    = os.getenv("HOME") .. "/.config/rofi/keybinds.sh"
+
+local reminderScript    = os.getenv("HOME") .. "/.config/rofi/reminder.sh"
+local recordToggleScript = os.getenv("HOME") .. "/.config/quickshell/scripts/record-toggle.sh"
+local clipboardScript   = "sh -c 'cliphist list | rofi -dmenu -p \"Clipboard\" | cliphist decode | wl-copy'"
 
 -- Applications and System
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
+hl.bind(mainMod .. " + grave", hl.dsp.workspace.toggle_special("scratchpad"))
 hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd(terminal .. " -e yazi"))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
-hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(clipboardScript))
 hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
-hl.bind(mainMod .. " + Tab", hl.dsp.exec_cmd(windowMenu))
 hl.bind("ALT + Tab", hl.dsp.exec_cmd(windowMenu))
 hl.bind(mainMod .. " + ALT + Space", hl.dsp.exec_cmd(hubMenu))
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd(powermenu))
+hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd(keybindsScript))
+hl.bind(mainMod .. " + CTRL + R", hl.dsp.exec_cmd(reminderScript))
+hl.bind(mainMod .. " + CTRL + ALT + R", hl.dsp.exec_cmd(reminderScript .. " manage"))
+hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd(recordToggleScript .. " fullscreen"))
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(recordToggleScript .. " region"))
+hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd(colorPickerScript))
+hl.bind(mainMod .. " + SHIFT + O", hl.dsp.exec_cmd(ocrScript))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(themeSwitcher))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(wallpaperSwitcher))
 hl.bind(mainMod .. " + ALT + W", hl.dsp.exec_cmd(wallpaperNext))
@@ -104,7 +120,8 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true, repeating = true })
-hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true, repeating = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd(micScript), { locked = true, repeating = true })
+hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd(micScript))
 hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(brightnessScript .. " 5%+"), { locked = true, repeating = true })
 hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(brightnessScript .. " 5%-"), { locked = true, repeating = true })
 hl.bind("Caps_Lock", hl.dsp.exec_cmd(capslockScript), { locked = true, non_consuming = true })
@@ -140,11 +157,8 @@ hl.bind(mainMod .. " + SHIFT + P", function()
     ))
 end)
 
--- Clipboard history
-hl.bind(mainMod .. " + comma", hl.dsp.exec_cmd(
-    "cliphist list | rofi -dmenu -p clipboard | cliphist decode | wl-copy"
-))
-
+-- Clipboard wipe
 hl.bind(mainMod .. " + SHIFT + comma", hl.dsp.exec_cmd(
     'cliphist wipe && notify-send "Clipboard" "History cleared"'
 ))
+
