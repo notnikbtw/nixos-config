@@ -15,6 +15,13 @@
       enable_audio_bell = false;
 
       hide_window_decorations = "yes";
+      scrollback_lines = 10000;
+
+      # URL and hyperlink handling
+      detect_urls = "yes";
+      url_style = "straight";
+      open_url_with = "default";
+      underline_hyperlinks = "hover";
     };
 
     extraConfig = ''
@@ -25,6 +32,7 @@
     keybindings = {
       "ctrl+shift+c" = "copy_to_clipboard";
       "ctrl+shift+v" = "paste_from_clipboard";
+      "ctrl+shift+e" = "open_url_with_hints";
     };
   };
 }
