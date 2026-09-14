@@ -12,4 +12,18 @@
     configDir = "/home/nik/.config/syncthing";
     openDefaultPorts = true;
   };
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = false;
+    settings = {
+      General = {
+        AutoEnable = false;
+      };
+    };
+  };
+
+  services.blueman.enable = true;
+  services.udisks2.enable = true;
 }
+

@@ -9,6 +9,8 @@
     imv
     p7zip
     unzip
+    zip
+    ffmpegthumbnailer
     mpv
     yazi
     thunar
@@ -35,6 +37,7 @@
     wl-screenrec
     wf-recorder
     tesseract
+    qrencode
     wtype
     cliphist
     hyprpicker
@@ -43,6 +46,7 @@
     playerctl
     networkmanagerapplet
     blueman
+    bluez
     syncthingtray
     pavucontrol
     wireplumber
@@ -60,8 +64,6 @@
     fastfetch
     hyfetch
     fortune
-    cowsay
-    cbonsai
     zoxide
     fzf
     jq
