@@ -11,7 +11,7 @@
 window {
     background-color: @bg0;
     border: 2px;
-    border-color: @orange;
+    border-color: @accent;
     border-radius: 0px;
     width: 340px;
     padding: 14px;
@@ -33,7 +33,7 @@ inputbar {
 }
 
 prompt {
-    text-color: @yellow;
+    text-color: @accent;
     font: "JetBrainsMono Nerd Font Bold 12";
 }
 
@@ -68,7 +68,7 @@ element normal.normal {
 
 element selected.normal {
     background-color: @bg1;
-    text-color: @yellow;
+    text-color: @accent;
 }
 
 element alternate.normal {

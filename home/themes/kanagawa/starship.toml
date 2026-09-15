@@ -6,12 +6,12 @@ success_symbol = "[❯](#98bb6c)"
 error_symbol = "[❯](#c34043)"
 
 [directory]
-style = "#7e9cd8 bold"
+style = "#957fb8 bold"
 truncation_length = 3
 
 [git_branch]
 symbol = " "
-style = "#957fb8"
+style = "#7aa89f"
 
 [git_status]
 style = "#e5c07b"

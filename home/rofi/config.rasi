@@ -11,7 +11,7 @@
 window {
     background-color: @bg0;
     border: 2px;
-    border-color: @orange;
+    border-color: @accent;
     border-radius: 0px;
     width: 480px;
     padding: 16px;
@@ -31,7 +31,7 @@ inputbar {
 }
 
 prompt {
-    text-color: @yellow;
+    text-color: @accent;
 }
 
 entry {
@@ -67,12 +67,12 @@ element normal.urgent {
 
 element normal.active {
     background-color: @bg0;
-    text-color: @yellow;
+    text-color: @accent;
 }
 
 element selected.normal {
     background-color: @bg1;
-    text-color: @yellow;
+    text-color: @accent;
 }
 
 element selected.urgent {
@@ -82,7 +82,7 @@ element selected.urgent {
 
 element selected.active {
     background-color: @bg1;
-    text-color: @yellow;
+    text-color: @accent;
 }
 
 element alternate.normal {
@@ -97,7 +97,7 @@ element alternate.urgent {
 
 element alternate.active {
     background-color: @bg0;
-    text-color: @yellow;
+    text-color: @accent;
 }
 
 element-text {

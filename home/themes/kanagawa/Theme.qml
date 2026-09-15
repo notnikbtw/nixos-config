@@ -25,7 +25,7 @@ QtObject {
     readonly property color blue:   "#7e9cd8"
     readonly property color purple: "#957fb8"
     readonly property color aqua:   "#7aa89f"
-    readonly property color accent: blue
+    readonly property color accent: purple
     readonly property color orange: "#ffa066"
 
     readonly property string fontMono: FontConfig.family
