@@ -1,144 +1,129 @@
 # NixOS + Hyprland dotfiles
 
-A modular, multi-host NixOS configuration using flakes and home-manager,
-running Hyprland (native Lua config) across a laptop and a desktop.
+A modular, multi-host NixOS configuration using flakes and Home Manager,
+running Hyprland across a laptop and a desktop.
 
 ## Hosts
 
-| Host      | Hardware                                          |
-|-----------|----------------------------------------------------|
-| `laptop`  | Lenovo IdeaPad 5 Pro 16ACH6 (AMD + NVIDIA PRIME)   |
-| `desktop` | ASUS PRIME B660-PLUS D4, i5-12600KF, RTX 3080, dual monitor |
+| Host      | Hardware                                                     | Profile Details |
+|-----------|--------------------------------------------------------------|-----------------|
+| `laptop`  | Lenovo IdeaPad 5 Pro 16ACH6 (AMD Ryzen 5000 + NVIDIA PRIME) | 2.5K 120Hz display, battery & power-profiles daemon, scaled fonts |
+| `desktop` | ASUS PRIME B660, Intel Core i5, RTX 3080                     | Dual 1440p @ 165Hz monitors, compact UI font scaling |
 
 ## Stack
 
-- **WM:** Hyprland (Lua config, `hl.bind` API)
-- **Bar & OSD:** Quickshell (status bar, notifications, and built-in volume/brightness OSD)
-- **Launcher:** Rofi (drun, window switcher, powermenu, theme switcher, wallpaper switcher, control hub)
-- **Lock/idle:** Hyprlock + Hypridle
-- **Terminal:** Kitty
-- **Shell:** Zsh + Starship
-- **Multiplexer:** Tmux (auto-attached on new terminal)
-- **AI Stack:** Ollama (CUDA acceleration), `llm-agents.nix` (`opencode`, `antigravity-cli`), AI CLIs (`aichat`, `tgpt`, `gemini-cli`)
-- **Wallpaper:** awww (animated wallpaper daemon with per-theme galleries)
-- **Theme:** Dynamic system-wide theming (Gruvbox, Kanagawa, TokyoNight, Miasma) across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland
+- **Window Manager:** Hyprland
+- **Status Bar, Notifications & OSD:** Quickshell
+- **Application Launcher & Hub:** Rofi Wayland
+- **Screen Locker & Idle:** Hyprlock + Hypridle
+- **Terminal:** Kitty (GPU-accelerated, FiraCode Nerd Font)
+- **Shell & Prompt:** Zsh + Starship
+- **Multiplexer:** Tmux
+- **Screen Recording & Capture:** `wf-recorder` (NVIDIA DMA-BUF buffer support), Grim, Slurp, Swappy
+- **AI Stack:** Ollama (CUDA acceleration on-demand), `llm-agents.nix` (`opencode`, `antigravity-cli`)
+- **Wallpaper Daemon:** `awww`
+- **Dynamic Theming:** Instant switching across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland (Gruvbox, Kanagawa, Miasma)
 
 ## Structure
 
 ```
-├── flake.nix                             # Multi-host flake with inputs (nixpkgs, home-manager, nixos-hardware, llm-agents)
+├── flake.nix                             # Multi-host flake inputs & configuration outputs
 ├── flake.lock
 ├── hosts/
 │   ├── laptop/
-│   │   ├── configuration.nix
-│   │   ├── hardware-configuration.nix   # Machine-specific LUKS & disk setup
-│   │   └── gpu.nix                      # Hybrid AMD + NVIDIA PRIME offload & power management
+│   │   ├── configuration.nix             # Laptop system configuration
+│   │   ├── hardware-configuration.nix    # Machine-specific LUKS & disk mounts
+│   │   └── gpu.nix                       # Hybrid AMD + NVIDIA PRIME offload
 │   └── desktop/
-│       ├── configuration.nix
-│       ├── hardware-configuration.nix   # Machine-specific LUKS & disk setup
-│       └── gpu.nix                      # Standalone NVIDIA GPU setup
-├── modules/                              # Shared system modules across ALL hosts
-│   ├── nix.nix
-│   ├── boot.nix                          # Generic systemd-boot loader
-│   ├── networking.nix                    # NetworkManager, timezones & XKB locales
+│       ├── configuration.nix             # Desktop system configuration
+│       ├── hardware-configuration.nix    # Machine-specific LUKS & disk mounts
+│       └── gpu.nix                       # Standalone NVIDIA GPU setup
+├── modules/                              # Shared system modules
+│   ├── nix.nix                           # Flakes, auto-optimise-store, nix.gc
+│   ├── boot.nix                          # Systemd-boot, configurationLimit, zramSwap
+│   ├── networking.nix                    # NetworkManager, timezones & locales
 │   ├── users.nix                         # User accounts & groups
-│   ├── desktop.nix                       # Hyprland, Greetd, Pipewire, Polkit & XDG Portals
-│   ├── programs.nix                      # Docker, Steam, Thunar
-│   ├── packages.nix                      # System packages & llm-agents tools
-│   └── services.nix                      # Local AI services (Ollama CUDA)
+│   ├── desktop.nix                       # Hyprland, Greetd, Pipewire, Polkit, Fonts
+│   ├── programs.nix                      # Docker (on-demand), Steam, Thunar
+│   ├── packages.nix                      # System packages & dev tools
+│   └── services.nix                      # Ollama (CUDA), Bluetooth, Syncthing
 └── home/
     ├── home.nix                          # Base Home Manager entrypoint
+    ├── settings.nix                      # Declarative per-host font and UI sizing options
     ├── hosts/
-    │   ├── laptop.nix                    # Laptop home-manager config & laptop Waybar
-    │   └── desktop.nix                   # Desktop home-manager config & desktop Waybar
-    ├── hypr.nix + hypr/                  # hyprland.lua, hypridle, hyprlock, wallpaper
-    ├── hyprpaper.nix
-    ├── waybar.nix + waybar/              # Split waybar configs (config-laptop.jsonc, config-desktop.jsonc)
-    ├── rofi.nix + rofi/
-    ├── dunst.nix + dunst/
-    ├── kitty.nix
-    ├── zsh.nix                           # Zsh, aliases, secrets loader
-    ├── tmux.nix
-    ├── starship.nix
-    └── theme.nix                         # GTK/Qt/cursor, Gruvbox, dconf
+    │   ├── laptop.nix                    # Laptop hostSettings (fontSize = 13, barHeight = 34)
+    │   └── desktop.nix                   # Desktop hostSettings (fontSize = 11, barHeight = 30)
+    ├── hypr.nix + hypr/                  # hyprland.lua, hypridle, hyprlock, scripts
+    ├── quickshell.nix + quickshell/      # QML bar, volume/brightness OSD, notifications
+    ├── rofi.nix + rofi/                  # Hub, launchers, menus, and reminder scripts
+    ├── theme.nix + themes/               # Gruvbox, Kanagawa, Miasma themes & hooks
+    ├── kitty.nix                         # Terminal config & keybindings
+    ├── zsh.nix                           # Zsh aliases, yazi wrapper, zoxide integration
+    ├── tmux.nix                          # Tmux config
+    ├── btop.nix                          # System monitor config
+    └── starship.nix                      # Shell prompt configuration
 ```
 
-## Prerequisites
+## Declarative Per-Host UI Scaling
 
-Nix with flakes enabled:
+Font sizes and bar dimensions are managed in a single declarative location:
+- [`home/settings.nix`](file:///home/nik/.config/nixos/home/settings.nix) defines the options: `fontFamily`, `uiFontFamily`, `fontSize`, `fontSizeSmall`, `kittyFontSize`, and `barHeight`.
+- Host overrides in [`home/hosts/laptop.nix`](file:///home/nik/.config/nixos/home/hosts/laptop.nix) and [`home/hosts/desktop.nix`](file:///home/nik/.config/nixos/home/hosts/desktop.nix) automatically propagate to Kitty, Rofi, Quickshell, and GTK interfaces without manual duplication.
 
-```
-experimental-features = nix-command flakes
-```
+## Keybindings Cheat Sheet
 
-## Installing on a new machine
-
-If reusing this repo on genuinely different hardware, regenerate the hardware config rather than reusing an existing host's file:
-
-```bash
-sudo nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix
-```
-
-1. Clone the repo:
-   ```bash
-   git clone <this-repo-url> ~/.config/nixos
-   ```
-2. Generate hardware config for this machine:
-   ```bash
-   sudo nixos-generate-config --show-hardware-config > ~/.config/nixos/hosts/<hostname>/hardware-configuration.nix
-   ```
-   (create the `hosts/<hostname>/` folder first if it's a brand-new host,
-   with a `configuration.nix` and `gpu.nix` - copy an existing host's as a
-   starting point and adjust for the hardware)
-3. Add the file to git's index so the flake can see it (it stays gitignored
-   from being committed publicly, but Nix flakes only evaluate tracked
-   files):
-   ```bash
-   git add -f hosts/<hostname>/hardware-configuration.nix
-   ```
-4. Update the LUKS UUID in `hosts/<hostname>/configuration.nix` (or
-   `modules/boot.nix` if shared) to match your own disk - find it with
-   `blkid`.
-5. Register the host in `flake.nix` under `nixosConfigurations` if it's new.
-6. Point `/etc/nixos` at the repo:
-   ```bash
-   sudo mv /etc/nixos /etc/nixos.bak
-   sudo ln -s ~/.config/nixos /etc/nixos
-   ```
-7. Build:
-   ```bash
-   sudo nixos-rebuild switch --flake ~/.config/nixos#<hostname>
-   ```
-
-## Day-to-day usage
-
-Aliases (defined in `home/zsh.nix`, auto-detect the current host via
-`$(hostname)` - same commands work on both machines):
-
-| Alias | Does |
+| Keybinding | Action |
 |---|---|
-| `nrb` | Build the config for this host without applying (dry check) |
-| `nrs` | Build and switch for this host |
-| `nfu` | `nix flake update` |
+| `Super + Return` | Open Terminal (Kitty) |
+| `Super + Space` | Application Launcher (Rofi) |
+| `Super + Alt + Space` | System Control Hub (Rofi) |
+| `Super + E` | Graphical File Manager (Thunar) |
+| `Super + Y` | Terminal File Manager (Yazi) |
+| `Super + V` | Clipboard History Manager |
+| `Super + Shift + T` | Theme Switcher (Gruvbox, Kanagawa, Miasma) |
+| `Super + Shift + W` | Wallpaper Gallery Selector |
+| `Super + Alt + R` | Screen Recording (Fullscreen, `wf-recorder`) |
+| `Super + Shift + R` | Screen Recording (Select Region, `wf-recorder`) |
+| `Print` | Screenshot (Region to file & clipboard) |
+| `Super + Shift + P` | Screenshot with Annotation (Swappy) |
+| `Super + Shift + C` | Color Picker (Hyprpicker) |
+| `Super + Shift + O` | OCR Text Grabber (Tesseract) |
+| `Super + Ctrl + R` | Quick Reminders & Pomodoro Timer |
+| `Super + /` | Interactive Keybindings Cheat Sheet |
+| `Super + Escape` | Power Menu (Lock, Suspend, Reboot, Shutdown) |
+| `Ctrl + L` | Lock Screen immediately (Hyprlock) |
 
-Full commands, if not using the aliases:
+## Day-to-Day Maintenance
 
-```bash
-sudo nixos-rebuild build  --flake ~/.config/nixos#$(hostname)
-sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)
-```
+Aliases defined in [`home/zsh.nix`](file:///home/nik/.config/nixos/home/zsh.nix) automatically detect the active host via `$(hostname)`:
 
-Update dependencies (nixpkgs, home-manager, nixos-hardware) - affects both
-hosts, since they share the same flake inputs:
+| Command | Description |
+|---|---|
+| `nrs` | Build and switch configuration (`sudo nixos-rebuild switch --flake`) |
+| `nrb` | Build configuration without switching (dry check) |
+| `nfu` | Update flake inputs (`nix flake update`) |
 
-```bash
-cd ~/.config/nixos
-nix flake update
-nrs
-```
-
-Roll back if something breaks:
-
+To roll back to the previous generation:
 ```bash
 sudo nixos-rebuild switch --rollback
 ```
+
+## Installing on a New Machine
+
+1. Clone the repository:
+   ```bash
+   git clone <repo-url> ~/.config/nixos
+   ```
+2. Generate hardware configuration:
+   ```bash
+   sudo nixos-generate-config --show-hardware-config > ~/.config/nixos/hosts/<hostname>/hardware-configuration.nix
+   ```
+3. Add the file to git index so the flake can evaluate it:
+   ```bash
+   git add -f ~/.config/nixos/hosts/<hostname>/hardware-configuration.nix
+   ```
+4. Configure LUKS/disk UUIDs in the host configuration and register the host in `flake.nix`.
+5. Build and activate:
+   ```bash
+   sudo nixos-rebuild switch --flake ~/.config/nixos#<hostname>
+   ```
