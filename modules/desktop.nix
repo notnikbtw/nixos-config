@@ -30,21 +30,16 @@
   fonts = {
     enableDefaultPackages = true;
     packages = with pkgs; [
-      nerd-fonts.jetbrains-mono
       nerd-fonts.fira-code
-      nerd-fonts.hack
-      nerd-fonts.symbols-only
-      font-awesome
       noto-fonts
-      noto-fonts-cjk-sans
       noto-fonts-color-emoji
     ];
     fontconfig = {
       enable = true;
       defaultFonts = {
-        monospace = [ "JetBrainsMono Nerd Font" "Symbols Nerd Font" "Noto Color Emoji" ];
-        sansSerif = [ "DejaVu Sans" "Symbols Nerd Font" "Noto Color Emoji" ];
-        serif = [ "DejaVu Serif" "Symbols Nerd Font" "Noto Color Emoji" ];
+        monospace = [ "FiraCode Nerd Font" "Noto Color Emoji" ];
+        sansSerif = [ "Noto Sans" "DejaVu Sans" "Noto Color Emoji" ];
+        serif = [ "DejaVu Serif" "Noto Color Emoji" ];
         emoji = [ "Noto Color Emoji" ];
       };
     };

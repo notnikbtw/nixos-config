@@ -3,6 +3,7 @@
   home.stateVersion = "26.05";
 
   imports = [
+    ./settings.nix
     ./hypr.nix
     ./quickshell.nix
     ./rofi.nix

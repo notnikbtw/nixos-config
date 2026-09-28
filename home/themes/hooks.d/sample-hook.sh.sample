@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Example theme hook called on theme changes
-# Argument $1 is the active theme name (gruvbox, kanagawa, tokyonight, miasma)
+# Argument $1 is the active theme name (gruvbox, kanagawa, miasma)
 THEME="$1"
 
 # Add custom application integration commands here.

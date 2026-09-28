@@ -31,6 +31,6 @@ QtObject {
     readonly property string fontMono: FontConfig.family
     readonly property int fontSizeNormal: FontConfig.sizeNormal
     readonly property int fontSizeSmall: FontConfig.sizeSmall
-    readonly property int barHeight: 32
+    readonly property int barHeight: (FontConfig.barHeight !== undefined && FontConfig.barHeight > 0) ? FontConfig.barHeight : 32
     readonly property int radius: 0
 }
