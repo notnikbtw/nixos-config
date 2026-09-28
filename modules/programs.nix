@@ -1,6 +1,9 @@
 { pkgs, ... }:
 {
-  virtualisation.docker.enable = true;
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = false;
+  };
 
   programs.steam = {
     enable = true;

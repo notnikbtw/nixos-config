@@ -1,7 +1,6 @@
 { pkgs, inputs, ... }:
 {
   environment.systemPackages = (with pkgs; [
-    # Apps
     firefox
     telegram-desktop
     wget
@@ -19,13 +18,10 @@
     prismlauncher
     libreoffice
 
-    # Hyprland environment
     hyprlock
     hypridle
     hyprpolkitagent
     awww
-    (pkgs.writeShellScriptBin "swww" ''exec ${pkgs.awww}/bin/awww "$@"'')
-    (pkgs.writeShellScriptBin "swww-daemon" ''exec ${pkgs.awww}/bin/awww-daemon "$@"'')
     hyprsunset
     quickshell
     rofi
@@ -37,11 +33,9 @@
     wl-screenrec
     wf-recorder
     tesseract
-    qrencode
     wtype
     cliphist
     hyprpicker
-    hyprshade
     brightnessctl
     playerctl
     networkmanagerapplet
@@ -52,7 +46,6 @@
     wireplumber
     file-roller
 
-    # Terminal
     zsh
     starship
     tmux
@@ -68,7 +61,6 @@
     fzf
     jq
 
-    # Dev environment
     vscode
     go
     nodejs_22
@@ -84,6 +76,7 @@
     ollama
     act
     llmfit
+    gh
 
     adwaita-icon-theme
     papirus-icon-theme

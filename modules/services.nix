@@ -1,9 +1,10 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   services.ollama = {
     enable = true;
     package = pkgs.ollama-cuda;
   };
+  systemd.services.ollama.wantedBy = lib.mkForce [];
 
   services.syncthing = {
     enable = true;
