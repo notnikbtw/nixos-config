@@ -34,7 +34,6 @@ inputbar {
 
 prompt {
     text-color: @accent;
-    font: "JetBrainsMono Nerd Font Bold 11";
 }
 
 entry {

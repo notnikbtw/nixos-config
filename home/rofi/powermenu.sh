@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# Options
 lock="  Lock"
 suspend="  Suspend"
 logout="󰍃  Log Out"

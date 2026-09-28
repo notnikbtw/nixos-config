@@ -45,7 +45,6 @@ hl.window_rule({
   workspace = "special:scratchpad",
 })
 
--- Floating utility windows
 hl.window_rule({
   name   = "float-audio-control",
   match  = { class = "^(pavucontrol|org\\.pulseaudio\\.pavucontrol)$" },

@@ -221,7 +221,6 @@ manage_active_timers() {
     done
 }
 
-# CLI Commands
 if [[ $# -ge 1 ]]; then
     case "$1" in
         cancel)
@@ -243,7 +242,6 @@ if [[ $# -ge 1 ]]; then
     esac
 fi
 
-# Interactive Rofi mode
 active_count=$(count_active_timers)
 
 options=""

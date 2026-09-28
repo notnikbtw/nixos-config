@@ -26,7 +26,6 @@
     export STARSHIP_CONFIG="$HOME/.config/themes/current/starship.toml"
     [ -f "$HOME/.config/themes/current/shell.sh" ] && source "$HOME/.config/themes/current/shell.sh"
 
-    # Yazi file manager wrapper with cwd persistence on quit
     function y() {
         local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
         command yazi "$@" --cwd-file="$tmp"
@@ -36,7 +35,6 @@
         rm -f -- "$tmp"
     }
 
-    # Zoxide smart directory jumping (z)
     if command -v zoxide >/dev/null 2>&1; then
         eval "$(zoxide init zsh)"
     fi

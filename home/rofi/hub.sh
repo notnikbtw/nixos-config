@@ -8,7 +8,6 @@ else
     ROFI_CMD="rofi -dmenu"
 fi
 
-# Helper: Toggle Night Light (hyprsunset)
 toggle_nightlight() {
     if pgrep -x hyprsunset >/dev/null 2>&1; then
         pkill -x hyprsunset
@@ -19,10 +18,9 @@ toggle_nightlight() {
     fi
 }
 
-# Submenu: Customization
 menu_customization() {
     while true; do
-        local options="󰌌  Back\n󰉼  Themes\n󰸉  Wallpapers\n󰑐  Next Wallpaper\n  Fonts & Size\n󰃠  Night Light (Toggle)"
+        local options="󰌌  Back\n󰉼  Themes\n󰸉  Wallpapers\n󰃠  Night Light (Toggle)"
         local chosen
         chosen="$(echo -e "$options" | $ROFI_CMD -p "Customize")"
         case "$chosen" in
@@ -37,14 +35,6 @@ menu_customization() {
                 "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/wallpaper-switcher.sh"
                 exit 0
                 ;;
-            *"Next Wallpaper"*)
-                "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/wallpaper-next.sh"
-                exit 0
-                ;;
-            *"Fonts"*)
-                "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/font-switcher.sh"
-                exit 0
-                ;;
             *"Night Light"*)
                 toggle_nightlight
                 exit 0
@@ -56,7 +46,6 @@ menu_customization() {
     done
 }
 
-# Submenu: Settings
 menu_settings() {
     while true; do
         local options="󰌌  Back\n  Audio & Volume (Pavucontrol)\n󰂯  Bluetooth (Blueman)\n󰖩  Network Connections\n󰍹  Displays & Monitors"
@@ -94,7 +83,6 @@ menu_settings() {
     done
 }
 
-# Main Menu: Control Hub
 main_menu() {
     while true; do
         local options="󰉼  Customization\n  Settings\n󰌌  Shortcuts & Keybinds\n󰔛  Reminders & Pomodoro\n󰅍  Clipboard History\n󰹑  Take Screenshot\n  Power Menu"

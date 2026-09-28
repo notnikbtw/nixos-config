@@ -26,7 +26,4 @@ if hostname == "desktop" then
       "__GLX_VENDOR_LIBRARY_NAME,nvidia",
     }
   })
-
-elseif hostname == "laptop" then
-  -- AMD iGPU handles rendering on Wayland; no NVIDIA env overrides needed
 end
