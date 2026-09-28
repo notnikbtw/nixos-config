@@ -70,12 +70,11 @@ fi
 FILENAME="$TARGET_DIR/recording_$(date +%Y-%m-%d_%H-%M-%S).mp4"
 echo "$FILENAME" > "$LOCK_FILE"
 
-# Prefer wf-recorder for full NVIDIA buffer modifier support
 if command -v wf-recorder >/dev/null 2>&1; then
     if [[ -n "$GEOMETRY" ]]; then
-        wf-recorder -g "$GEOMETRY" -p pixel_format=yuv420p -f "$FILENAME" < /dev/null >/tmp/wf-recorder.log 2>&1 &
+        nohup wf-recorder -g "$GEOMETRY" -p pixel_format=yuv420p -f "$FILENAME" < /dev/null >/tmp/wf-recorder.log 2>&1 &
     else
-        wf-recorder -o "$MONITOR" -p pixel_format=yuv420p -f "$FILENAME" < /dev/null >/tmp/wf-recorder.log 2>&1 &
+        nohup wf-recorder -o "$MONITOR" -p pixel_format=yuv420p -f "$FILENAME" < /dev/null >/tmp/wf-recorder.log 2>&1 &
     fi
     REC_PID=$!
     disown "$REC_PID" 2>/dev/null
@@ -97,9 +96,9 @@ fi
 
 if command -v wl-screenrec >/dev/null 2>&1; then
     if [[ -n "$GEOMETRY" ]]; then
-        wl-screenrec -g "$GEOMETRY" -f "$FILENAME" < /dev/null >/tmp/wl-screenrec.log 2>&1 &
+        nohup wl-screenrec -g "$GEOMETRY" -f "$FILENAME" < /dev/null >/tmp/wl-screenrec.log 2>&1 &
     else
-        wl-screenrec --output "$MONITOR" -f "$FILENAME" < /dev/null >/tmp/wl-screenrec.log 2>&1 &
+        nohup wl-screenrec --output "$MONITOR" -f "$FILENAME" < /dev/null >/tmp/wl-screenrec.log 2>&1 &
     fi
     REC_PID=$!
     disown "$REC_PID" 2>/dev/null

@@ -25,16 +25,10 @@ Item {
         return "󰕾"
     }
 
-    AudioPopup {
-        id: audioPopup
-        anchor.item: root
-        visible: false
-    }
-
     Rectangle {
         anchors.fill: parent
         radius: Theme.radius
-        color: (mouseArea.containsMouse || audioPopup.visible) ? Theme.bg1 : "transparent"
+        color: mouseArea.containsMouse ? Theme.bg1 : "transparent"
     }
 
     RowLayout {
@@ -62,21 +56,8 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) {
-                audioPopup.visible = !audioPopup.visible
-            } else if (mouse.button === Qt.RightButton) {
-                if (root.sink && root.sink.audio) {
-                    root.sink.audio.muted = !root.sink.audio.muted
-                }
-            }
-        }
-        onWheel: wheel => {
-            if (root.sink && root.sink.audio) {
-                let step = wheel.angleDelta.y > 0 ? 0.05 : -0.05
-                root.sink.audio.volume = Math.max(0.0, Math.min(1.0, root.sink.audio.volume + step))
-            }
+        onClicked: {
+            Quickshell.execDetached(["pavucontrol"])
         }
     }
 }

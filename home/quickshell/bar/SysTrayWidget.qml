@@ -14,7 +14,6 @@ RowLayout {
     readonly property int totalCount: items.length
     readonly property bool needsDrawer: totalCount > 2
 
-    // Drawer toggle button (shown when there are more than 2 items)
     Rectangle {
         visible: root.needsDrawer
         implicitWidth: 16
@@ -47,7 +46,6 @@ RowLayout {
             required property var modelData
             required property int index
 
-            // In collapsed mode, only the first 2 items are visible
             visible: !root.needsDrawer || root.expanded || index < 2
 
             implicitWidth: 20

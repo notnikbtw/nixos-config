@@ -40,16 +40,10 @@ Item {
 
     readonly property color netColor: isConnected ? Theme.blue : Theme.red
 
-    NetworkPopup {
-        id: netPopup
-        anchor.item: root
-        visible: false
-    }
-
     Rectangle {
         anchors.fill: parent
         radius: Theme.radius
-        color: (mouseArea.containsMouse || netPopup.visible) ? Theme.bg1 : "transparent"
+        color: mouseArea.containsMouse ? Theme.bg1 : "transparent"
     }
 
     RowLayout {
@@ -77,13 +71,8 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) {
-                netPopup.visible = !netPopup.visible
-            } else if (mouse.button === Qt.RightButton) {
-                Quickshell.execDetached(["nm-connection-editor"])
-            }
+        onClicked: {
+            Quickshell.execDetached(["nm-connection-editor"])
         }
     }
 }

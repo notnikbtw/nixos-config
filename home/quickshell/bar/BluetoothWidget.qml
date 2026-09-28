@@ -76,14 +76,8 @@ Item {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-        onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) {
-                Quickshell.execDetached(["sh", "-c", "if bluetoothctl show | grep -q 'Powered: yes'; then bluetoothctl power off; else bluetoothctl power on; fi"])
-                btStatusProc.running = true
-            } else if (mouse.button === Qt.RightButton) {
-                Quickshell.execDetached(["blueman-manager"])
-            }
+        onClicked: {
+            Quickshell.execDetached(["blueman-manager"])
         }
     }
 }

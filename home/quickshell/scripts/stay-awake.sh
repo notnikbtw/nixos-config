@@ -21,7 +21,6 @@ start() {
         exit 0
     fi
 
-    # 1. systemd-inhibit to block sleep, idle, and lid switch
     if command -v systemd-inhibit >/dev/null 2>&1; then
         systemd-inhibit \
             --what=idle:sleep:handle-lid-switch \
@@ -31,7 +30,6 @@ start() {
         echo "$!" > "$PID_FILE"
     fi
 
-    # 2. D-Bus inhibitor for hypridle / org.freedesktop.ScreenSaver
     if command -v busctl >/dev/null 2>&1; then
         local out cookie
         out=$(busctl --user call org.freedesktop.ScreenSaver /org/freedesktop/ScreenSaver org.freedesktop.ScreenSaver Inhibit ss "Quickshell StayAwake" "Inhibit screen lock" 2>/dev/null || true)

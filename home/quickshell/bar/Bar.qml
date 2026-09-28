@@ -41,8 +41,6 @@ PanelWindow {
             anchors.centerIn: parent
             spacing: 8
 
-            NightLightWidget {}
-
             StayAwakeWidget {}
 
             ScreenRecordWidget {
