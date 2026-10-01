@@ -1,15 +1,15 @@
 import Quickshell
 import Quickshell.Io
 import QtQuick
-import QtQuick.Layouts
 import ".."
 
-RowLayout {
+Item {
     id: root
-    visible: hasDaemon
-    spacing: 4
+    visible: available
+    implicitWidth: 24
+    implicitHeight: 24
 
-    property bool hasDaemon: false
+    property bool available: false
     property string currentProfile: "balanced"
 
     Process {
@@ -24,23 +24,53 @@ RowLayout {
             onRead: data => {
                 let p = data.trim()
                 if (p === "performance" || p === "balanced" || p === "power-saver") {
-                    root.hasDaemon = true
+                    root.available = true
                     root.currentProfile = p
                 } else {
-                    root.hasDaemon = false
+                    root.available = false
                 }
             }
         }
     }
 
+    Process {
+        id: profileSetter
+        property string targetProfile: ""
+        command: ["powerprofilesctl", "set", targetProfile]
+
+        onExited: exitCode => {
+            if (exitCode === 0) {
+                root.currentProfile = targetProfile
+                Quickshell.execDetached([
+                    "notify-send",
+                    "-i",
+                    "preferences-system-power",
+                    "-u",
+                    "low",
+                    "Power Profile",
+                    "Profile set to: " + targetProfile
+                ])
+            }
+            if (!profileChecker.running) {
+                profileChecker.running = true
+            }
+        }
+    }
+
     Timer {
-        interval: 4000
-        running: true
+        interval: 10000
+        running: root.available
         repeat: true
-        onTriggered: profileChecker.running = true
+        onTriggered: {
+            if (!profileChecker.running && !profileSetter.running) {
+                profileChecker.running = true
+            }
+        }
     }
 
     function cycleProfile() {
+        if (profileSetter.running) return
+
         let next = "balanced"
         if (root.currentProfile === "power-saver") {
             next = "balanced"
@@ -50,12 +80,8 @@ RowLayout {
             next = "power-saver"
         }
 
-        root.currentProfile = next
-        Quickshell.execDetached([
-            "sh",
-            "-c",
-            "powerprofilesctl set " + next + " && notify-send -i preferences-system-power 'Power Profile' 'Profile set to: " + next + "'"
-        ])
+        profileSetter.targetProfile = next
+        profileSetter.running = true
     }
 
     readonly property string icon: {
@@ -70,18 +96,25 @@ RowLayout {
         return Theme.aqua
     }
 
+    Rectangle {
+        anchors.fill: parent
+        radius: Theme.radius
+        color: profileMouse.containsMouse ? Theme.bg1 : "transparent"
+    }
+
     Text {
+        anchors.centerIn: parent
         text: root.icon
         font.family: Theme.fontMono
         font.pixelSize: Theme.fontSizeNormal
         color: profileMouse.containsMouse ? Theme.fg0 : root.profileColor
+    }
 
-        MouseArea {
-            id: profileMouse
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: root.cycleProfile()
-        }
+    MouseArea {
+        id: profileMouse
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: root.cycleProfile()
     }
 }
