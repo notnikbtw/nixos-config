@@ -57,13 +57,6 @@ Item {
             font.pixelSize: Theme.fontSizeNormal
             color: root.netColor
         }
-
-        Text {
-            text: root.isConnected ? root.iface : "Offline"
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fontSizeNormal
-            color: root.netColor
-        }
     }
 
     MouseArea {
