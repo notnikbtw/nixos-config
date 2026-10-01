@@ -1,9 +1,13 @@
 hl.on("hyprland.start", function()
-  hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE &")
-  hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE &")
-  hl.exec_cmd("systemctl --user set-environment QT_QPA_PLATFORM=wayland &")
-  hl.exec_cmd("systemctl --user restart xdg-desktop-portal xdg-desktop-portal-hyprland &")
-  hl.exec_cmd("hyprctl setcursor Adwaita 24 &")
+  hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
+  hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE")
+  hl.exec_cmd("systemctl --user set-environment QT_QPA_PLATFORM=wayland")
+
+  hl.exec_cmd("systemctl --user start hyprpolkitagent")
+
+  hl.exec_cmd("systemctl --user restart xdg-desktop-portal xdg-desktop-portal-hyprland")
+  hl.exec_cmd("hyprctl setcursor Adwaita 24")
+
   local initSession = os.getenv("HOME") .. "/.config/hypr/scripts/init-session.sh"
   hl.exec_cmd(initSession .. " &")
   hl.exec_cmd("hypridle &")
