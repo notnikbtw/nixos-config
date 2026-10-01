@@ -25,3 +25,10 @@ elseif hostname == "desktop" then
         scale    = 1,
     })
 end
+
+hl.monitor({
+    output   = "",
+    mode     = "preferred",
+    position = "auto",
+    scale    = 1,
+})
