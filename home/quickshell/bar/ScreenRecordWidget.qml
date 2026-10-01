@@ -1,9 +1,7 @@
 import Quickshell
 import Quickshell.Io
-import Quickshell.Wayland
 import Quickshell.Hyprland
 import QtQuick
-import QtQuick.Layouts
 import ".."
 
 Item {
@@ -11,6 +9,7 @@ Item {
 
     property string screenName: ""
     property bool isRecording: false
+    property double startTime: 0
     property int elapsedSeconds: 0
 
     implicitWidth: 24
@@ -22,6 +21,12 @@ Item {
         return (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s
     }
 
+    function updateElapsed() {
+        if (root.isRecording && root.startTime > 0) {
+            root.elapsedSeconds = Math.max(0, Math.floor((Date.now() - root.startTime) / 1000))
+        }
+    }
+
     function toggleRecording() {
         let mon = root.screenName
         if (!mon && Hyprland.focusedMonitor) {
@@ -29,48 +34,34 @@ Item {
         }
         let scriptPath = Quickshell.shellDir + "/scripts/record-toggle.sh"
         Quickshell.execDetached(["bash", scriptPath, mon || ""])
-        checkTimer.restart()
-        secondaryCheckTimer.restart()
+        statusChecker.running = true
     }
 
     function openFolder() {
-        Quickshell.execDetached(["sh", "-c", "xdg-open ~/Videos/Recordings || thunar ~/Videos/Recordings"])
-    }
-
-    Timer {
-        id: checkTimer
-        interval: 350
-        running: false
-        repeat: false
-        onTriggered: statusChecker.running = true
-    }
-
-    Timer {
-        id: secondaryCheckTimer
-        interval: 800
-        running: false
-        repeat: false
-        onTriggered: statusChecker.running = true
+        Quickshell.execDetached(["xdg-open", Quickshell.env("HOME") + "/Videos/Recordings"])
     }
 
     Process {
         id: statusChecker
-        command: [
-            "sh",
-            "-c",
-            "if pgrep -x wl-screenrec >/dev/null 2>&1 || pgrep -x wf-recorder >/dev/null 2>&1; then echo 'running'; else echo 'stopped'; fi"
-        ]
+        command: ["bash", Quickshell.shellDir + "/scripts/record-toggle.sh", "status"]
         running: true
         stdout: SplitParser {
             onRead: data => {
-                let state = data.trim()
+                let parts = data.trim().split(" ")
+                let state = parts[0]
                 if (state === "running") {
+                    let procStartSec = parts.length > 1 ? parseInt(parts[1], 10) : 0
+                    let procStartMs = (procStartSec > 0) ? procStartSec * 1000 : Date.now()
                     if (!root.isRecording) {
                         root.isRecording = true
-                        root.elapsedSeconds = 0
+                        root.startTime = procStartMs
+                    } else if (procStartSec > 0 && Math.abs(root.startTime - procStartMs) > 2000) {
+                        root.startTime = procStartMs
                     }
+                    root.updateElapsed()
                 } else if (state === "stopped") {
                     root.isRecording = false
+                    root.startTime = 0
                     root.elapsedSeconds = 0
                 }
             }
@@ -83,9 +74,7 @@ Item {
         repeat: true
         onTriggered: {
             statusChecker.running = true
-            if (root.isRecording) {
-                root.elapsedSeconds++
-            }
+            root.updateElapsed()
         }
     }
 

@@ -30,7 +30,6 @@
     grim
     slurp
     swappy
-    wl-screenrec
     wf-recorder
     tesseract
     wtype
