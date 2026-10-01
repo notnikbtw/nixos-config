@@ -21,9 +21,11 @@ PanelWindow {
     exclusiveZone: 0
     color: "transparent"
 
+    readonly property bool hasBar: osdType === "volume" || osdType === "brightness"
+
     visible: false
     implicitWidth: 260
-    implicitHeight: 52
+    implicitHeight: hasBar ? 52 : 36
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink, Pipewire.defaultAudioSource]
@@ -191,7 +193,20 @@ PanelWindow {
         fadeOutAnim.stop()
         osdWindow.visible = true
         osdCard.opacity = 1
+        popAnim.restart()
         hideTimer.restart()
+    }
+
+    SequentialAnimation {
+        id: popAnim
+        NumberAnimation {
+            target: osdCard
+            property: "scale"
+            from: 0.98
+            to: 1.0
+            duration: 80
+            easing.type: Easing.OutQuad
+        }
     }
 
     Timer {
@@ -253,9 +268,9 @@ PanelWindow {
             anchors.fill: parent
             anchors.leftMargin: 14
             anchors.rightMargin: 14
-            anchors.topMargin: 9
-            anchors.bottomMargin: 9
-            spacing: 6
+            anchors.topMargin: osdWindow.hasBar ? 9 : 8
+            anchors.bottomMargin: osdWindow.hasBar ? 9 : 8
+            spacing: osdWindow.hasBar ? 6 : 0
 
             RowLayout {
                 Layout.fillWidth: true
@@ -284,12 +299,13 @@ PanelWindow {
                     font.family: Theme.fontMono
                     font.pixelSize: Theme.fontSizeSmall
                     font.bold: true
-                    color: Theme.fgText
+                    color: osdWindow.hasBar ? Theme.fgText : osdWindow.osdColor
                     Layout.alignment: Qt.AlignVCenter
                 }
             }
 
             Rectangle {
+                visible: osdWindow.hasBar
                 Layout.fillWidth: true
                 height: 4
                 color: Theme.bg2
