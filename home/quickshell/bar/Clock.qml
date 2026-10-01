@@ -46,8 +46,9 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            root.currentTime = new Date()
-            calendarPopup.currentTime = new Date()
+            const now = new Date()
+            root.currentTime = now
+            calendarPopup.currentTime = now
             calendarPopup.visible = !calendarPopup.visible
         }
     }

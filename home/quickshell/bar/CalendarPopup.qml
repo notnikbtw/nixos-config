@@ -9,9 +9,20 @@ PopupWindow {
 
     property var currentTime: new Date()
 
-    color: "transparent"
+    onVisibleChanged: {
+        if (visible) {
+            currentTime = new Date()
+        }
+    }
 
-    grabFocus: true
+    Timer {
+        interval: 60000
+        running: calWindow.visible
+        repeat: true
+        onTriggered: calWindow.currentTime = new Date()
+    }
+
+    color: "transparent"
 
     anchor {
         gravity: Edges.Bottom
