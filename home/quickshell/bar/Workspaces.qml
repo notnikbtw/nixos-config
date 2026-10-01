@@ -7,18 +7,45 @@ RowLayout {
     id: root
     spacing: 4
 
+    function wsHasWindows(ws) {
+        if (!ws) return false
+        return ws.windows > 0
+            || (ws.toplevels && ws.toplevels.values.length > 0)
+            || (ws.lastIpcObject && ws.lastIpcObject.windows > 0)
+    }
+
+    readonly property var workspaceIds: {
+        let ids = [1, 2, 3, 4, 5]
+        let focusedId = (Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.id > 0)
+            ? Hyprland.focusedWorkspace.id
+            : -1
+
+        if (Hyprland.workspaces && Hyprland.workspaces.values) {
+            for (let i = 0; i < Hyprland.workspaces.values.length; i++) {
+                let ws = Hyprland.workspaces.values[i]
+                if (!ws || ws.id <= 5) continue
+
+                if (root.wsHasWindows(ws) || ws.id === focusedId) {
+                    ids.push(ws.id)
+                }
+            }
+        }
+
+        return ids.sort((a, b) => a - b)
+    }
+
     Repeater {
-        model: 5
+        model: root.workspaceIds
 
         delegate: Rectangle {
             id: wsBtn
-            required property int index
-            readonly property int wsId: index + 1
+            required property int modelData
+            readonly property int wsId: modelData
             readonly property bool isFocused: Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.id === wsId
             readonly property bool hasWindows: {
-                if (!Hyprland.workspaces) return false
+                if (!Hyprland.workspaces || !Hyprland.workspaces.values) return false
                 let ws = Hyprland.workspaces.values.find(w => w.id === wsId)
-                return ws ? (ws.windows > 0 || (ws.toplevels && ws.toplevels.values.length > 0) || (ws.lastIpcObject && ws.lastIpcObject.windows > 0)) : false
+                return root.wsHasWindows(ws)
             }
 
             implicitWidth: 22
@@ -29,11 +56,11 @@ RowLayout {
             Item {
                 anchors.centerIn: parent
 
-                Rectangle {
+                Text {
                     anchors.centerIn: parent
-                    width: 8
-                    height: 8
-                    radius: 0
+                    text: "󰊠"
+                    font.family: Theme.fontMono
+                    font.pixelSize: Theme.fontSizeNormal
                     color: Theme.fgHigh
                     visible: wsBtn.isFocused
                 }
