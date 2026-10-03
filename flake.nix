@@ -1,6 +1,11 @@
 {
   description = "NixOS + Hyprland config (multi-host)";
 
+  nixConfig = {
+    extra-substituters = [ "https://cache.numtide.com" ];
+    extra-trusted-public-keys = [ "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
@@ -16,7 +21,7 @@
 
   outputs = { self, nixpkgs, home-manager, nixos-hardware, llm-agents, ... }@inputs:
   let
-    mkHost = { hostname, extraModules ? [], homeFile }:
+    mkHost = { hostname, extraModules ? [] }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs nixos-hardware; };
@@ -41,23 +46,16 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
-            home-manager.extraSpecialArgs = { inherit inputs; };
-            home-manager.users.nik = import homeFile;
+            home-manager.extraSpecialArgs = { inherit inputs hostname; };
+            home-manager.users.nik = import ./home/home.nix;
           }
         ] ++ extraModules;
       };
   in
   {
     nixosConfigurations = {
-      laptop = mkHost {
-        hostname = "laptop";
-        homeFile = ./home/hosts/laptop.nix;
-      };
-
-      desktop = mkHost {
-        hostname = "desktop";
-        homeFile = ./home/hosts/desktop.nix;
-      };
+      laptop = mkHost { hostname = "laptop"; };
+      desktop = mkHost { hostname = "desktop"; };
     };
   };
 }

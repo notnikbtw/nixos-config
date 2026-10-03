@@ -1,7 +1,6 @@
 { pkgs, inputs, ... }:
 {
   environment.systemPackages = (with pkgs; [
-    firefox
     telegram-desktop
     wget
     btop
@@ -10,9 +9,10 @@
     unzip
     zip
     ffmpegthumbnailer
+    webp-pixbuf-loader
+    librsvg
     mpv
     yazi
-    thunar
     vesktop
     obsidian
     prismlauncher
@@ -34,7 +34,6 @@
     tesseract
     wtype
     cliphist
-    hyprpicker
     brightnessctl
     playerctl
     networkmanagerapplet
@@ -72,9 +71,7 @@
     docker-compose
     postgresql
     antigravity
-    ollama
     act
-    llmfit
     gh
 
     adwaita-icon-theme

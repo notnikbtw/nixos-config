@@ -20,6 +20,11 @@
       nrs = "sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)";
       nrb = "sudo nixos-rebuild build --flake ~/.config/nixos#$(hostname)";
       nfu = "cd ~/.config/nixos && nix flake update && cd -";
+      ta = "tmux attach -t main || tmux new -s main";
+      tls = "tmux ls";
+      ollama-stop = "docker stop ollama";
+      ff = "firefox &";
+      ff2 = "firefox -P secondary --no-remote &";
     };
 
     initContent = ''
@@ -35,12 +40,21 @@
         rm -f -- "$tmp"
     }
 
+    function ollama() {
+        if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -q '^ollama$'; then
+            if docker ps -a --format '{{.Names}}' 2>/dev/null | grep -q '^ollama$'; then
+                echo "Starting existing Ollama container..."
+                docker start ollama >/dev/null
+            else
+                echo "Launching Ollama container with NVIDIA GPU..."
+                docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama --restart no ollama/ollama >/dev/null
+            fi
+        fi
+        docker exec -it ollama ollama "$@"
+    }
+
     if command -v zoxide >/dev/null 2>&1; then
         eval "$(zoxide init zsh)"
-    fi
-
-    if [[ -z "$TMUX" && -z "$VSCODE_INJECTION" && -z "$SSH_CONNECTION" && "$TERM_PROGRAM" != "vscode" ]]; then
-        tmux attach -t main || tmux new -s main
     fi
     '';
   };
