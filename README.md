@@ -1,14 +1,13 @@
-# NixOS + Hyprland dotfiles
+# NixOS dotfiles
 
-A modular, multi-host NixOS configuration using flakes and Home Manager,
-running Hyprland across a laptop and a desktop.
+My personal modular NixOS configuration with multiple hosts, using flakes and Home Manager, in which Hyprland runs simultaneously on a laptop and a desktop computer.
 
 ## Hosts
 
 | Host      | Hardware                                                     | Profile Details |
 |-----------|--------------------------------------------------------------|-----------------|
-| `laptop`  | Lenovo IdeaPad 5 Pro 16ACH6 (AMD Ryzen 5000 + NVIDIA PRIME) | 2.5K 120Hz display, battery & power-profiles daemon, scaled fonts |
-| `desktop` | ASUS PRIME B660, Intel Core i5, RTX 3080                     | Dual 1440p @ 165Hz monitors, compact UI font scaling |
+| `laptop`  | Lenovo IdeaPad 5 Pro (Ryzen 5000 / RTX 3050M)                | 2.5K 120Hz, battery profiles, scaled UI |
+| `desktop` | Intel i5 / RTX 3080                                          | 2x 1440p @ 165Hz, compact UI |
 
 ## Stack
 
@@ -18,90 +17,98 @@ running Hyprland across a laptop and a desktop.
 - **Screen Locker & Idle:** Hyprlock + Hypridle
 - **Terminal:** Kitty (GPU-accelerated, FiraCode Nerd Font)
 - **Shell & Prompt:** Zsh + Starship
-- **Multiplexer:** Tmux
+- **Multiplexer:** Tmux (manual session management via `ta` / `tls`)
 - **Screen Recording & Capture:** `wf-recorder` (NVIDIA DMA-BUF buffer support), Grim, Slurp, Swappy
-- **AI Stack:** Ollama (CUDA acceleration on-demand), `llm-agents.nix` (`opencode`, `antigravity-cli`)
+- **AI Stack:** Docker Ollama (NVIDIA Container Toolkit GPU passthrough), `llm-agents.nix` (`opencode`, `antigravity-cli`)
 - **Wallpaper Daemon:** `awww`
 - **Dynamic Theming:** Instant switching across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland (Gruvbox, Kanagawa, Miasma)
 
-## Structure
-
-```
-├── flake.nix                             # Multi-host flake inputs & configuration outputs
-├── flake.lock
-├── hosts/
-│   ├── laptop/
-│   │   ├── configuration.nix             # Laptop system configuration
-│   │   ├── hardware-configuration.nix    # Machine-specific LUKS & disk mounts
-│   │   └── gpu.nix                       # Hybrid AMD + NVIDIA PRIME offload
-│   └── desktop/
-│       ├── configuration.nix             # Desktop system configuration
-│       ├── hardware-configuration.nix    # Machine-specific LUKS & disk mounts
-│       └── gpu.nix                       # Standalone NVIDIA GPU setup
-├── modules/                              # Shared system modules
-│   ├── nix.nix                           # Flakes, auto-optimise-store, nix.gc
-│   ├── boot.nix                          # Systemd-boot, configurationLimit, zramSwap
-│   ├── networking.nix                    # NetworkManager, timezones & locales
-│   ├── users.nix                         # User accounts & groups
-│   ├── desktop.nix                       # Hyprland, Greetd, Pipewire, Polkit, Fonts
-│   ├── programs.nix                      # Docker (on-demand), Steam, Thunar
-│   ├── packages.nix                      # System packages & dev tools
-│   └── services.nix                      # Ollama (CUDA), Bluetooth, Syncthing
-└── home/
-    ├── home.nix                          # Base Home Manager entrypoint
-    ├── settings.nix                      # Declarative per-host font and UI sizing options
-    ├── hosts/
-    │   ├── laptop.nix                    # Laptop hostSettings (fontSize = 13, barHeight = 34)
-    │   └── desktop.nix                   # Desktop hostSettings (fontSize = 11, barHeight = 30)
-    ├── hypr.nix + hypr/                  # hyprland.lua, hypridle, hyprlock, scripts
-    ├── quickshell.nix + quickshell/      # QML bar, volume/brightness OSD, notifications
-    ├── rofi.nix + rofi/                  # Hub, launchers, menus, and reminder scripts
-    ├── theme.nix + themes/               # Gruvbox, Kanagawa, Miasma themes & hooks
-    ├── kitty.nix                         # Terminal config & keybindings
-    ├── zsh.nix                           # Zsh aliases, yazi wrapper, zoxide integration
-    ├── tmux.nix                          # Tmux config
-    ├── btop.nix                          # System monitor config
-    └── starship.nix                      # Shell prompt configuration
-```
-
 ## Declarative Per-Host UI Scaling
 
-Font sizes and bar dimensions are managed in a single declarative location:
-- [`home/settings.nix`](file:///home/nik/.config/nixos/home/settings.nix) defines the options: `fontFamily`, `uiFontFamily`, `fontSize`, `fontSizeSmall`, `kittyFontSize`, and `barHeight`.
-- Host overrides in [`home/hosts/laptop.nix`](file:///home/nik/.config/nixos/home/hosts/laptop.nix) and [`home/hosts/desktop.nix`](file:///home/nik/.config/nixos/home/hosts/desktop.nix) automatically propagate to Kitty, Rofi, Quickshell, and GTK interfaces without manual duplication.
+All font settings and per-device display scalings are defined in a single file:
+- `home/settings.nix` defines the font families (`fontFamily`, `uiFontFamily`) and contains the profile table (`profiles.desktop` and `profiles.laptop`).
+- Home Manager automatically resolves the active profile based on the host name (`hostname`), propagating the sizes to Kitty, Rofi, Quickshell, and GTK themes without any duplicate host files.
 
-## Keybindings Cheat Sheet
+## Keybindings
 
+### Window Management & Navigation
 | Keybinding | Action |
 |---|---|
 | `Super + Return` | Open Terminal (Kitty) |
-| `Super + Space` | Application Launcher (Rofi) |
+| `Super + Q` | Close active window |
+| `Super + Shift + Q` | Force kill active window |
+| `Super + M` / `Super + Shift + F` | Toggle fullscreen |
+| `Super + \` | Toggle horizontal/vertical split |
+| `Super + Shift + R` | Reload Hyprland configuration |
+| `Super + H / J / K / L` | Focus window left / down / up / right (Vim keys) |
+| `Super + Shift + H / J / K / L` | Move window left / down / up / right |
+| `Super + Ctrl + H / J / K / L` / `Arrows` | Resize window ratio |
+| `Super + R` | Enter Interactive Resize Mode (submap: `HJKL` / `Arrows` / Cyrillic `рдело` / `Esc` to exit) |
+| `Super + 1..0` | Switch to workspace 1..10 |
+| `Super + Shift + 1..0` | Move window to workspace 1..10 |
+| `Super + \`` | Toggle scratchpad (`special:scratchpad`) |
+| `Super + Shift + \`` | Move window to scratchpad |
+| `Super + Mouse Scroll` | Switch to next / previous workspace |
+| `Super + LMB (Drag)` | Move window |
+| `Super + RMB (Drag)` | Resize window |
+
+---
+
+### Applications & Launchers
+| Keybinding | Action |
+|---|---|
+| `Super + Space` | Application Launcher (Rofi drun) |
 | `Super + Alt + Space` | System Control Hub (Rofi) |
-| `Super + E` | Graphical File Manager (Thunar) |
+| `Super + B` | Web Browser (Firefox default profile) |
+| `Super + Shift + B` | Web Browser (Firefox secondary profile) |
+| `Super + F` | Graphical File Manager (Thunar) |
 | `Super + Y` | Terminal File Manager (Yazi) |
-| `Super + V` | Clipboard History Manager |
-| `Super + Shift + T` | Theme Switcher (Gruvbox, Kanagawa, Miasma) |
+| `Super + V` | Clipboard History Manager (cliphist + Rofi) |
+| `Super + Shift + ,` | Clear Clipboard History (`cliphist wipe`) |
+| `Super + Shift + T` | Theme Switcher |
 | `Super + Shift + W` | Wallpaper Gallery Selector |
-| `Super + Alt + R` | Screen Recording (Fullscreen, `wf-recorder`) |
-| `Super + Shift + R` | Screen Recording (Select Region, `wf-recorder`) |
-| `Print` | Screenshot (Region to file & clipboard) |
+| `Super + Escape` | Power Menu (Rofi) |
+| `Super + Alt + L` | Lock screen immediately (Hyprlock) |
+
+---
+
+### Media & Screen Capture
+| Keybinding | Action |
+|---|---|
+| `Print` | Screenshot (Select region to file & clipboard) |
 | `Super + Shift + P` | Screenshot with Annotation (Swappy) |
-| `Super + Shift + C` | Color Picker (Hyprpicker) |
-| `Super + Shift + O` | OCR Text Grabber (Tesseract) |
-| `Super + Ctrl + R` | Quick Reminders & Pomodoro Timer |
-| `Super + /` | Interactive Keybindings Cheat Sheet |
-| `Super + Escape` | Power Menu (Lock, Suspend, Reboot, Shutdown) |
-| `Ctrl + L` | Lock Screen immediately (Hyprlock) |
+| `Super + Shift + O` | OCR Text Grabber (Extract text from region) |
+| `Super + Alt + R` | Screen Recording (Toggle fullscreen recording) |
+| `Super + Shift + M` | Toggle Microphone Mute |
+| `Volume / Brightness / Media Keys` | Audio Sinks, Brightness (OSD scripts), Playerctl controls |
+| `Caps_Lock` | CapsLock Toggle + OSD Notification |
 
 ## Day-to-Day Maintenance
 
-Aliases defined in [`home/zsh.nix`](file:///home/nik/.config/nixos/home/zsh.nix) automatically detect the active host via `$(hostname)`:
+Aliases and shell utilities defined in `home/zsh.nix`:
 
+### NixOS System Management
 | Command | Description |
 |---|---|
-| `nrs` | Build and switch configuration (`sudo nixos-rebuild switch --flake`) |
+| `nrs` | Build and switch configuration (`sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)`) |
 | `nrb` | Build configuration without switching (dry check) |
-| `nfu` | Update flake inputs (`nix flake update`) |
+| `nfu` | Update flake inputs (`nix flake update`) in `~/.config/nixos` |
+
+### Shell & Multiplexer
+| Command | Description |
+|---|---|
+| `ta` | Attach to `main` tmux session or create if not running |
+| `tls` | List active tmux sessions (`tmux ls`) |
+| `y` | Yazi wrapper that automatically changes current directory on exit |
+| `ll` / `la` | Modern file list with details, permissions, and git status (`eza -la`) |
+| `tree` | Tree directory view (`eza --tree`) |
+| `cat` | Syntax-highlighted output pager (`bat`) |
+
+### AI & Local LLM (Docker GPU)
+| Command | Description |
+|---|---|
+| `ollama <command>` | Auto-starts Docker container with NVIDIA GPU acceleration and executes Ollama commands (`run`, `list`, `pull`, etc.) |
+| `ollama-stop` | Stops the Ollama Docker container to immediately release GPU VRAM |
 
 To roll back to the previous generation:
 ```bash
