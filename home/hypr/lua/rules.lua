@@ -31,19 +31,6 @@ hl.window_rule({
   pin   = true,
 })
 
-hl.workspace_rule({
-  workspace = "special:scratchpad",
-  on_created_empty = "[workspace special:scratchpad silent] kitty --class scratchpad",
-})
-
-hl.window_rule({
-  name      = "scratchpad-console",
-  match     = { class = "scratchpad" },
-  float     = true,
-  size      = "75% 55%",
-  move      = "12.5% 4%",
-  workspace = "special:scratchpad",
-})
 
 hl.window_rule({
   name   = "float-audio-control",

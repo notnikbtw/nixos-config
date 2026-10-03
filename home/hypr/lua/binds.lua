@@ -1,93 +1,97 @@
 local mainMod     = "SUPER"
 local terminal    = "kitty"
 local fileManager = "thunar"
+local browser     = "firefox"
 local menu        = "rofi -show drun"
-local windowMenu  = "rofi -show window"
 local powermenu   = os.getenv("HOME") .. "/.config/rofi/powermenu.sh"
 local themeSwitcher = os.getenv("HOME") .. "/.config/rofi/theme-switcher.sh"
 local wallpaperSwitcher = os.getenv("HOME") .. "/.config/rofi/wallpaper-switcher.sh"
 local hubMenu           = os.getenv("HOME") .. "/.config/rofi/hub.sh"
 local brightnessScript  = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-brightness.sh"
 local capslockScript    = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-capslock.sh"
-local colorPickerScript = os.getenv("HOME") .. "/.config/hypr/scripts/color-picker.sh"
 local ocrScript         = os.getenv("HOME") .. "/.config/hypr/scripts/ocr-extract.sh"
-local keybindsScript    = os.getenv("HOME") .. "/.config/rofi/keybinds.sh"
 
-local reminderScript    = os.getenv("HOME") .. "/.config/rofi/reminder.sh"
 local recordToggleScript = os.getenv("HOME") .. "/.config/quickshell/scripts/record-toggle.sh"
 local clipboardScript   = "sh -c 'cliphist list | rofi -dmenu -p \"Clipboard\" | cliphist decode | wl-copy'"
 
 hl.bind(mainMod .. " + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + grave", hl.dsp.workspace.toggle_special("scratchpad"))
-hl.bind(mainMod .. " + C", hl.dsp.window.close())
-hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
+hl.bind(mainMod .. " + SHIFT + grave", hl.dsp.window.move({ workspace = "special:scratchpad" }))
+hl.bind(mainMod .. " + Q", hl.dsp.window.close())
+hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.window.kill())
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd(browser))
+hl.bind(mainMod .. " + SHIFT + B", hl.dsp.exec_cmd(browser .. " -P secondary --no-remote"))
+hl.bind(mainMod .. " + F", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + Y", hl.dsp.exec_cmd(terminal .. " -e yazi"))
-hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.window.float({ action = "toggle" }))
+hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen())
+hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(clipboardScript))
 hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
-hl.bind("ALT + Tab", hl.dsp.exec_cmd(windowMenu))
 hl.bind(mainMod .. " + ALT + Space", hl.dsp.exec_cmd(hubMenu))
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd(powermenu))
-hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd(keybindsScript))
-hl.bind(mainMod .. " + CTRL + R", hl.dsp.exec_cmd(reminderScript))
-hl.bind(mainMod .. " + CTRL + ALT + R", hl.dsp.exec_cmd(reminderScript .. " manage"))
 hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd(recordToggleScript .. " fullscreen"))
-hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd(recordToggleScript .. " region"))
-hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd(colorPickerScript))
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload && notify-send 'Hyprland' 'Config reloaded'"))
 hl.bind(mainMod .. " + SHIFT + O", hl.dsp.exec_cmd(ocrScript))
 hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(themeSwitcher))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(wallpaperSwitcher))
-hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + backslash", hl.dsp.layout("togglesplit"))
 
-hl.bind("CTRL + L", hl.dsp.exec_cmd("pidof hyprlock || hyprlock"))
+hl.bind(mainMod .. " + ALT + L", hl.dsp.exec_cmd("pidof hyprlock || hyprlock"))
 
 hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }))
 hl.bind(mainMod .. " + L", hl.dsp.focus({ direction = "right" }))
 hl.bind(mainMod .. " + K", hl.dsp.focus({ direction = "up" }))
 hl.bind(mainMod .. " + J", hl.dsp.focus({ direction = "down" }))
-hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
-hl.bind(mainMod .. " + right", hl.dsp.focus({ direction = "right" }))
-hl.bind(mainMod .. " + up", hl.dsp.focus({ direction = "up" }))
-hl.bind(mainMod .. " + down", hl.dsp.focus({ direction = "down" }))
 
 hl.bind(mainMod .. " + SHIFT + H", hl.dsp.window.move({ direction = "left" }))
 hl.bind(mainMod .. " + SHIFT + L", hl.dsp.window.move({ direction = "right" }))
 hl.bind(mainMod .. " + SHIFT + K", hl.dsp.window.move({ direction = "up" }))
 hl.bind(mainMod .. " + SHIFT + J", hl.dsp.window.move({ direction = "down" }))
-hl.bind(mainMod .. " + SHIFT + left", hl.dsp.window.move({ direction = "left" }))
-hl.bind(mainMod .. " + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
-hl.bind(mainMod .. " + SHIFT + up", hl.dsp.window.move({ direction = "up" }))
-hl.bind(mainMod .. " + SHIFT + down", hl.dsp.window.move({ direction = "down" }))
 
-local resizeStep = 20
+hl.bind(mainMod .. " + CTRL + H", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+hl.bind(mainMod .. " + CTRL + L", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+hl.bind(mainMod .. " + CTRL + K", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+hl.bind(mainMod .. " + CTRL + J", hl.dsp.layout("splitratio +0.05"), { repeating = true })
 
-hl.bind(mainMod .. " + CTRL + H", hl.dsp.window.resize({ x = -resizeStep, y = 0, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + L", hl.dsp.window.resize({ x = resizeStep, y = 0, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + K", hl.dsp.window.resize({ x = 0, y = -resizeStep, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + J", hl.dsp.window.resize({ x = 0, y = resizeStep, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + left", hl.dsp.window.resize({ x = -resizeStep, y = 0, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + right", hl.dsp.window.resize({ x = resizeStep, y = 0, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + up", hl.dsp.window.resize({ x = 0, y = -resizeStep, relative = true }), { repeating = true })
-hl.bind(mainMod .. " + CTRL + down", hl.dsp.window.resize({ x = 0, y = resizeStep, relative = true }), { repeating = true })
+hl.bind(mainMod .. " + CTRL + Left", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+hl.bind(mainMod .. " + CTRL + Right", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+hl.bind(mainMod .. " + CTRL + Up", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+hl.bind(mainMod .. " + CTRL + Down", hl.dsp.layout("splitratio +0.05"), { repeating = true })
 
-hl.bind(mainMod .. " + R", hl.dsp.submap("resize"))
+hl.bind(mainMod .. " + R", function()
+  hl.notification.create({ text = "Resize Mode (HJKL / Arrows / Esc to exit)", time = 2000 })
+  hl.dispatch(hl.dsp.submap("resize"))
+end)
 
 hl.define_submap("resize", function()
-  hl.bind("H", hl.dsp.window.resize({ x = -resizeStep, y = 0, relative = true }), { repeating = true })
-  hl.bind("L", hl.dsp.window.resize({ x = resizeStep, y = 0, relative = true }), { repeating = true })
-  hl.bind("K", hl.dsp.window.resize({ x = 0, y = -resizeStep, relative = true }), { repeating = true })
-  hl.bind("J", hl.dsp.window.resize({ x = 0, y = resizeStep, relative = true }), { repeating = true })
+  hl.bind("h", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("l", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+  hl.bind("k", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("j", hl.dsp.layout("splitratio +0.05"), { repeating = true })
 
-  hl.bind("left", hl.dsp.window.resize({ x = -resizeStep, y = 0, relative = true }), { repeating = true })
-  hl.bind("right", hl.dsp.window.resize({ x = resizeStep, y = 0, relative = true }), { repeating = true })
-  hl.bind("up", hl.dsp.window.resize({ x = 0, y = -resizeStep, relative = true }), { repeating = true })
-  hl.bind("down", hl.dsp.window.resize({ x = 0, y = resizeStep, relative = true }), { repeating = true })
+  hl.bind("H", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("L", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+  hl.bind("K", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("J", hl.dsp.layout("splitratio +0.05"), { repeating = true })
 
-  hl.bind("Escape", hl.dsp.submap("reset"))
-  hl.bind("Return", hl.dsp.submap("reset"))
-  hl.bind(mainMod .. " + R", hl.dsp.submap("reset"))
+  hl.bind("Left", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("Right", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+  hl.bind("Up", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("Down", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+
+  hl.bind("Cyrillic_er", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("Cyrillic_de", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+  hl.bind("Cyrillic_el", hl.dsp.layout("splitratio -0.05"), { repeating = true })
+  hl.bind("Cyrillic_o", hl.dsp.layout("splitratio +0.05"), { repeating = true })
+
+  local function exitSubmap()
+    hl.dispatch(hl.dsp.submap("reset"))
+    hl.notification.create({ text = "Exited resize mode", time = 1000 })
+  end
+
+  hl.bind("Escape", exitSubmap)
+  hl.bind("Return", exitSubmap)
+  hl.bind(mainMod .. " + R", exitSubmap)
 end)
 
 for i = 1, 10 do
@@ -95,9 +99,6 @@ for i = 1, 10 do
   hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
   hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
-
-hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
 
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
