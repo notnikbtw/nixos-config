@@ -13,6 +13,7 @@
     ./starship.nix
     ./theme.nix
     ./btop.nix
+    ./firefox.nix
   ];
 
   xdg.mimeApps = {
@@ -35,5 +36,10 @@
       "application/pdf" = [ "firefox.desktop" ];
       "text/plain" = [ "code.desktop" ];
     };
+  };
+
+  xfconf.settings.thunar = {
+    "misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_ALWAYS";
+    "misc-thumbnail-max-file-size" = 0;
   };
 }
