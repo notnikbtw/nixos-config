@@ -23,6 +23,7 @@ PopupWindow {
     }
 
     color: "transparent"
+    grabFocus: true
 
     anchor {
         gravity: Edges.Bottom
