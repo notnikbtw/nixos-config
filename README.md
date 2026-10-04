@@ -1,6 +1,14 @@
 # NixOS dotfiles
 
-My personal modular NixOS configuration with multiple hosts, using flakes and Home Manager, in which Hyprland runs simultaneously on a laptop and a desktop computer.
+<a href="https://portfolio-notnikbtw.vercel.app/" target="_blank" rel="noopener noreferrer">
+  <img src="https://portfolio-notnikbtw.vercel.app/buttons/notnik.png" alt="!Nik - 88x31 Button" width="88" height="31" />
+</a>
+
+[![NixOS Unstable](https://img.shields.io/badge/NixOS-unstable-blue.svg?logo=nixos&logoColor=white)](https://nixos.org)
+[![WM - Hyprland](https://img.shields.io/badge/WM-Hyprland-58E6D9.svg?logo=hyprland&logoColor=black)](https://hyprland.org)
+[![License - MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+My personal modular NixOS configuration for desktop and laptop running Hyprland. Powered by Nix Flakes, Home Manager, and a local Docker LLM stack.
 
 ## Hosts
 
@@ -119,7 +127,7 @@ sudo nixos-rebuild switch --rollback
 
 1. Clone the repository:
    ```bash
-   git clone <repo-url> ~/.config/nixos
+   git clone https://github.com/notnikbtw/nixos-config.git ~/.config/nixos
    ```
 2. Generate hardware configuration:
    ```bash
@@ -134,3 +142,16 @@ sudo nixos-rebuild switch --rollback
    ```bash
    sudo nixos-rebuild switch --flake ~/.config/nixos#<hostname>
    ```
+## Contributing
+
+Contributions, issues, and feature requests are very welcome :3
+
+If you've found an error, have an idea, or just want to suggest any improvements
+1. Open an issue to discuss your proposed change or fix.
+2. Fork the repository, create a branch (`git checkout -b feature/cool-idea`), and open a Pull Request.
+
+Feel free to steal any scripts, modules, or keybindings for your own configuration!
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for details.
