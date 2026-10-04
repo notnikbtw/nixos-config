@@ -70,7 +70,6 @@
     neovim
     docker-compose
     postgresql
-    antigravity
     act
     gh
 

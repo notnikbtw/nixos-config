@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 {
   home.pointerCursor = {
+    enable = true;
     gtk.enable = true;
     x11.enable = true;
     hyprcursor.enable = true;
@@ -11,7 +12,7 @@
 
   home.packages = with pkgs; [
     gruvbox-gtk-theme
-    kanagawa-gtk-theme
+    # kanagawa-gtk-theme    removed from nixpkgs unstable
     kanagawa-icon-theme
     papirus-icon-theme
     adwaita-icon-theme
