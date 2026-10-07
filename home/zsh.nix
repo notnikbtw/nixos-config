@@ -47,7 +47,7 @@
                 docker start ollama >/dev/null
             else
                 echo "Launching Ollama container with NVIDIA GPU..."
-                docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama --restart no ollama/ollama >/dev/null
+                docker run -d --gpus=all -v ollama:/root/.ollama -p 127.0.0.1:11434:11434 --name ollama --restart no ollama/ollama >/dev/null
             fi
         fi
         docker exec -it ollama ollama "$@"
