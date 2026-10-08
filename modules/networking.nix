@@ -16,9 +16,4 @@
     LC_TELEPHONE      = "en_US.UTF-8";
     LC_TIME           = "en_US.UTF-8";
   };
-
-  services.xserver.xkb = {
-    layout = "us,ua";
-    options = "grp:alt_shift_toggle";
-  };
 }

@@ -19,35 +19,25 @@
     libreoffice
 
     hyprlock
-    hypridle
-    hyprpolkitagent
     awww
     hyprsunset
     quickshell
     rofi
     libnotify
-    wl-clipboard
     grim
     slurp
     swappy
     wf-recorder
     tesseract
     wtype
-    cliphist
     brightnessctl
     playerctl
     networkmanagerapplet
     blueman
-    bluez
     syncthingtray
     pavucontrol
-    wireplumber
     file-roller
 
-    zsh
-    starship
-    tmux
-    kitty
     eza
     bat
     ripgrep
@@ -73,11 +63,10 @@
     act
     gh
 
-    adwaita-icon-theme
-    papirus-icon-theme
     hicolor-icon-theme
   ]) ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
     opencode
     antigravity-cli
+    claude-code
   ]);
 }

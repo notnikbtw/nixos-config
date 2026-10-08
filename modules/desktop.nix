@@ -44,15 +44,7 @@
       noto-fonts
       noto-fonts-color-emoji
     ];
-    fontconfig = {
-      enable = true;
-      defaultFonts = {
-        monospace = [ "FiraCode Nerd Font" "Noto Color Emoji" ];
-        sansSerif = [ "Noto Sans" "DejaVu Sans" "Noto Color Emoji" ];
-        serif = [ "DejaVu Serif" "Noto Color Emoji" ];
-        emoji = [ "Noto Color Emoji" ];
-      };
-    };
+    # Default font choices live in home/settings.nix (applied via home/theme.nix)
   };
 
   xdg.portal = {

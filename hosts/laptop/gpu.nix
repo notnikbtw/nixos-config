@@ -25,6 +25,4 @@
   };
 
   hardware.nvidia-container-toolkit.enable = true;
-
-  services.power-profiles-daemon.enable = true;
 }
