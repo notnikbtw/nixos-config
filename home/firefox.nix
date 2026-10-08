@@ -46,8 +46,6 @@ let
           "myallychou_gmail_com-browser-action"
           "enhancerforyoutube_maximerf_addons_mozilla_org-browser-action"
           "_aecec67f-0d10-4fa7-b7c7-609a2db280cf_-browser-action"
-          "xifangczy_gmail_com-browser-action"
-          "_446900e4-71c2-419f-a6a7-df9c091e268b_-browser-action"
           "addon_darkreader_org-browser-action"
         ];
         nav-bar = [
@@ -111,7 +109,6 @@ in
       };
 
       ExtensionSettings = {
-        # uBlock Origin
         "uBlock0@raymondhill.net" = {
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
           installation_mode = "force_installed";
@@ -124,11 +121,6 @@ in
 
         "enhancerforyoutube@maximerf.addons.mozilla.org" = {
           install_url = "https://addons.mozilla.org/firefox/downloads/latest/enhancer-for-youtube/latest.xpi";
-          installation_mode = "force_installed";
-        };
-
-        "xifangczy@gmail.com" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/cat-catch/latest.xpi";
           installation_mode = "force_installed";
         };
 
