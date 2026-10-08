@@ -37,7 +37,7 @@
     enable = true;
     defaultFonts = {
       monospace = [ config.hostSettings.fontFamily "Noto Color Emoji" ];
-      sansSerif = [ "DejaVu Sans" "Noto Color Emoji" ];
+      sansSerif = [ config.hostSettings.uiFontFamily "Noto Color Emoji" ];
       serif = [ "DejaVu Serif" "Noto Color Emoji" ];
       emoji = [ "Noto Color Emoji" ];
     };
