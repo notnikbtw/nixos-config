@@ -8,147 +8,112 @@
 [![WM - Hyprland](https://img.shields.io/badge/WM-Hyprland-58E6D9.svg?logo=hyprland&logoColor=black)](https://hyprland.org)
 [![License - MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-My personal modular NixOS configuration for desktop and laptop running Hyprland. Powered by Nix Flakes, Home Manager, and a local Docker LLM stack.
+My personal modular NixOS configuration for desktop and laptop running Hyprland
 
 ## Hosts
 
-| Host      | Hardware                                                     | Profile Details |
-|-----------|--------------------------------------------------------------|-----------------|
-| `laptop`  | Lenovo IdeaPad 5 Pro (Ryzen 5000 / RTX 3050M)                | 2.5K 120Hz, battery profiles, scaled UI |
-| `desktop` | Intel i5 / RTX 3080                                          | 2x 1440p @ 165Hz, compact UI |
+| Host      | Hardware                                      | Profile Details |
+|-----------|-----------------------------------------------|-----------------|
+| `laptop`  | Lenovo IdeaPad 5 Pro (Ryzen 5000 / RTX 3050M) | 2.5K 120Hz, battery profiles, scaled UI |
+| `desktop` | Intel i5 / RTX 3080                           | 2x 1440p @ 165Hz, compact UI |
 
 ## Stack
 
-- **Window Manager:** Hyprland
+- **Login & Session:** greetd + tuigreet
+- **Window Manager:** Hyprland (Lua config)
 - **Status Bar, Notifications & OSD:** Quickshell
 - **Application Launcher & Hub:** Rofi Wayland
 - **Screen Locker & Idle:** Hyprlock + Hypridle
 - **Terminal:** Kitty (GPU-accelerated, FiraCode Nerd Font)
 - **Shell & Prompt:** Zsh + Starship
-- **Multiplexer:** Tmux (manual session management via `ta` / `tls`)
+- **Multiplexer:** Tmux (truecolor, manual session management via `ta` / `tls`)
 - **Screen Recording & Capture:** `wf-recorder` (NVIDIA DMA-BUF buffer support), Grim, Slurp, Swappy
-- **AI Stack:** Docker Ollama (NVIDIA Container Toolkit GPU passthrough), `llm-agents.nix` (`opencode`, `antigravity-cli`)
+- **Storage:** Btrfs on LUKS (zstd compression, `noatime`, monthly scrub), Snapper snapshots of `/home`, zram swap
+- **AI Stack:** Docker Ollama, `llm-agents.nix` (`opencode`, `antigravity-cli`, `claude-code`)
 - **Wallpaper Daemon:** `awww`
 - **Dynamic Theming:** Instant switching across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland (Gruvbox, Kanagawa, Miasma)
 
 ## Declarative Per-Host UI Scaling
 
-All font settings and per-device display scalings are defined in a single file:
-- `home/settings.nix` defines the font families (`fontFamily`, `uiFontFamily`) and contains the profile table (`profiles.desktop` and `profiles.laptop`).
-- Home Manager automatically resolves the active profile based on the host name (`hostname`), propagating the sizes to Kitty, Rofi, Quickshell, and GTK themes without any duplicate host files.
+- `home/settings.nix` defines the font families (`fontFamily`, `uiFontFamily`) and the size profiles (`profiles.desktop`, `profiles.laptop`).
+- Home Manager selects a profile based on the hostname and passes the fonts and sizes to programs such as Kitty and Rofi, etc., so font names are specified in only one place.
+- Other per-host differences live in `hosts/<hostname>/`
 
 ## Keybindings
 
-### Window Management & Navigation
-| Keybinding | Action |
-|---|---|
-| `Super + Return` | Open Terminal (Kitty) |
-| `Super + Q` | Close active window |
-| `Super + Shift + Q` | Force kill active window |
-| `Super + M` / `Super + Shift + F` | Toggle fullscreen |
-| `Super + \` | Toggle horizontal/vertical split |
-| `Super + Shift + R` | Reload Hyprland configuration |
-| `Super + H / J / K / L` | Focus window left / down / up / right (Vim keys) |
-| `Super + Shift + H / J / K / L` | Move window left / down / up / right |
-| `Super + Ctrl + H / J / K / L` / `Arrows` | Resize window ratio |
-| `Super + R` | Enter Interactive Resize Mode (submap: `HJKL` / `Arrows` / Cyrillic `рдело` / `Esc` to exit) |
-| `Super + 1..0` | Switch to workspace 1..10 |
-| `Super + Shift + 1..0` | Move window to workspace 1..10 |
-| `Super + \`` | Toggle scratchpad (`special:scratchpad`) |
-| `Super + Shift + \`` | Move window to scratchpad |
-| `Super + Mouse Scroll` | Switch to next / previous workspace |
-| `Super + LMB (Drag)` | Move window |
-| `Super + RMB (Drag)` | Resize window |
+All keybindings (main modifier: `Super`) are defined in [`home/hypr/lua/binds.lua`](home/hypr/lua/binds.lua).
 
----
+## Storage & Snapshots
 
-### Applications & Launchers
-| Keybinding | Action |
-|---|---|
-| `Super + Space` | Application Launcher (Rofi drun) |
-| `Super + Alt + Space` | System Control Hub (Rofi) |
-| `Super + B` | Web Browser (Firefox default profile) |
-| `Super + Shift + B` | Web Browser (Firefox secondary profile) |
-| `Super + F` | Graphical File Manager (Thunar) |
-| `Super + Y` | Terminal File Manager (Yazi) |
-| `Super + V` | Clipboard History Manager (cliphist + Rofi) |
-| `Super + Shift + ,` | Clear Clipboard History (`cliphist wipe`) |
-| `Super + Shift + T` | Theme Switcher |
-| `Super + Shift + W` | Wallpaper Gallery Selector |
-| `Super + Escape` | Power Menu (Rofi) |
-| `Super + Alt + L` | Lock screen immediately (Hyprlock) |
+Defined in [`modules/filesystems.nix`](modules/filesystems.nix): `compress=zstd` and `noatime` on `/`, `/home` and `/nix`, a monthly `btrfs scrub` (`sudo btrfs scrub status /`), and hourly read-only Snapper snapshots of `/home`. A daily cleanup keeps:
 
----
+| Host | Hourly | Daily | Weekly | Goes back |
+|---|---|---|---|---|
+| `desktop` | 24 | 14 | 4 | ~1 month |
+| `laptop` | 12 | 7 | 0 | 1 week |
 
-### Media & Screen Capture
-| Keybinding | Action |
-|---|---|
-| `Print` | Screenshot (Select region to file & clipboard) |
-| `Super + Shift + P` | Screenshot with Annotation (Swappy) |
-| `Super + Shift + O` | OCR Text Grabber (Extract text from region) |
-| `Super + Alt + R` | Screen Recording (Toggle fullscreen recording) |
-| `Super + Shift + M` | Toggle Microphone Mute |
-| `Volume / Brightness / Media Keys` | Audio Sinks, Brightness (OSD scripts), Playerctl controls |
-| `Caps_Lock` | CapsLock Toggle + OSD Notification |
+Snapshot Management
 
-## Day-to-Day Maintenance
-
-Aliases and shell utilities defined in `home/zsh.nix`:
-
-### NixOS System Management
-| Command | Description |
-|---|---|
-| `nrs` | Build and switch configuration (`sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)`) |
-| `nrb` | Build configuration without switching (dry check) |
-| `nfu` | Update flake inputs (`nix flake update`) in `~/.config/nixos` |
-
-### Shell & Multiplexer
-| Command | Description |
-|---|---|
-| `ta` | Attach to `main` tmux session or create if not running |
-| `tls` | List active tmux sessions (`tmux ls`) |
-| `y` | Yazi wrapper that automatically changes current directory on exit |
-| `ll` / `la` | Modern file list with details, permissions, and git status (`eza -la`) |
-| `tree` | Tree directory view (`eza --tree`) |
-| `cat` | Syntax-highlighted output pager (`bat`) |
-
-### AI & Local LLM (Docker GPU)
-| Command | Description |
-|---|---|
-| `ollama <command>` | Auto-starts Docker container with NVIDIA GPU acceleration and executes Ollama commands (`run`, `list`, `pull`, etc.) |
-| `ollama-stop` | Stops the Ollama Docker container to immediately release GPU VRAM |
-
-To roll back to the previous generation:
 ```bash
-sudo nixos-rebuild switch --rollback
+sudo snapper -c home list                                          # find the snapshot <number>
+sudo cp -a /home/.snapshots/<number>/snapshot/$USER/path/to/file ~/path/to/   # restore, keeping your ownership
+sudo snapper -c home create -d "before cleanup"                    # manual snapshot (never auto-deleted)
+sudo snapper -c home delete <number>
 ```
+
+**Excluding folders:** nested Btrfs subvolumes are not part of snapshots. Re-downloadable data is excluded by turning its folder into a subvolume, with the app closed:
+```bash
+cd ~/.local/share/Steam/steamapps
+for d in common shadercache; do
+  mv "$d" "$d.old" && btrfs subvolume create "$d" && cp -a --reflink=always "$d.old/." "$d/"
+done
+# check that games launch, then: rm -rf common.old shadercache.old
+```
+`steamapps/compatdata` stays included, because Proton games keep their save files there.
+
+## Aliases
+
+Defined in [`home/zsh.nix`](home/zsh.nix):
+
+| Command | Description |
+|---|---|
+| `nrs` | Build and switch (`sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)`) |
+| `nrb` | Build without switching, to check that the configuration builds |
+| `nfu` | Update flake inputs (`nix flake update`) |
+| `ta` / `tls` | Attach to (or create) the `main` tmux session / list sessions |
+| `y` | Yazi that changes the current directory on exit |
+| `ll` / `la` / `tree` | `eza` listings with details and git status / tree view |
+| `cat` | `bat` with syntax highlighting |
+| `ollama <command>` | Starts the Ollama container (NVIDIA GPU, API on `127.0.0.1:11434`) and runs the command |
+| `ollama-stop` | Stops the container and frees GPU VRAM |
+
+Roll back to the previous generation with `sudo nixos-rebuild switch --rollback`.
 
 ## Installing on a New Machine
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/notnikbtw/nixos-config.git ~/.config/nixos
+   nix-shell -p git --run "git clone https://github.com/notnikbtw/nixos-config.git ~/.config/nixos"
    ```
-2. Generate hardware configuration:
+2. Create `hosts/<hostname>/` with a `configuration.nix` and `gpu.nix` (copy an existing host), and register it in `flake.nix`:
+   ```nix
+   <hostname> = mkHost { hostname = "<hostname>"; };
+   ```
+3. Generate the hardware configuration (disks, LUKS, kernel modules) and add the new files to git, since flakes only see tracked files:
    ```bash
-   sudo nixos-generate-config --show-hardware-config > ~/.config/nixos/hosts/<hostname>/hardware-configuration.nix
+   cd ~/.config/nixos
+   sudo nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix
+   nix-shell -p git --run "git add hosts/<hostname> flake.nix"
    ```
-3. Add the file to git index so the flake can evaluate it:
+4. Build and activate (flakes are not enabled yet on a fresh install):
    ```bash
-   git add -f ~/.config/nixos/hosts/<hostname>/hardware-configuration.nix
+   sudo env NIX_CONFIG="experimental-features = nix-command flakes" nixos-rebuild switch --flake ~/.config/nixos#<hostname>
    ```
-4. Configure LUKS/disk UUIDs in the host configuration and register the host in `flake.nix`.
-5. Build and activate:
-   ```bash
-   sudo nixos-rebuild switch --flake ~/.config/nixos#<hostname>
-   ```
+5. Log out and back in so the Hyprland session and portals start. `/home/.snapshots` is created automatically; exclude Steam games before the first snapshots if needed (see [Storage & Snapshots](#storage--snapshots)).
+
 ## Contributing
 
-Contributions, issues, and feature requests are very welcome :3
-
-If you've found an error, have an idea, or just want to suggest any improvements
-1. Open an issue to discuss your proposed change or fix.
-2. Fork the repository, create a branch (`git checkout -b feature/cool-idea`), and open a Pull Request.
+Issues, ideas and pull requests are very welcome :3 
 
 Feel free to steal any scripts, modules, or keybindings for your own configuration!
 
