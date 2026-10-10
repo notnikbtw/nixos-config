@@ -17,9 +17,10 @@
       la = "eza -la";
       tree = "eza --tree";
       cat = "bat";
-      nrs = "sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)";
-      nrb = "sudo nixos-rebuild build --flake ~/.config/nixos#$(hostname)";
-      nfu = "cd ~/.config/nixos && nix flake update && cd -";
+      nrs = "nh os switch";
+      nrb = "nh os build";
+      nfu = "nix flake update --flake ~/.config/nixos";
+      nru = "nh os switch --update";
       ta = "tmux attach -t main || tmux new -s main";
       tls = "tmux ls";
       ollama-stop = "docker stop ollama";

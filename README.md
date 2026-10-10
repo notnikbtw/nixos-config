@@ -77,9 +77,10 @@ Defined in [`home/zsh.nix`](home/zsh.nix):
 
 | Command | Description |
 |---|---|
-| `nrs` | Build and switch (`sudo nixos-rebuild switch --flake ~/.config/nixos#$(hostname)`) |
-| `nrb` | Build without switching, to check that the configuration builds |
-| `nfu` | Update flake inputs (`nix flake update`) |
+| `nrs` | Build, show the package diff and switch (`nh os switch`) |
+| `nrb` | Build without switching, to check that the configuration builds (`nh os build`) |
+| `nru` | Update flake inputs, show the package diff and switch (`nh os switch --update`) |
+| `nfu` | Update flake inputs only, without building (`nix flake update`) |
 | `ta` / `tls` | Attach to (or create) the `main` tmux session / list sessions |
 | `y` | Yazi that changes the current directory on exit |
 | `ll` / `la` / `tree` | `eza` listings with details and git status / tree view |
@@ -88,6 +89,8 @@ Defined in [`home/zsh.nix`](home/zsh.nix):
 | `ollama-stop` | Stops the container and frees GPU VRAM |
 
 Roll back to the previous generation with `sudo nixos-rebuild switch --rollback`.
+
+Garbage collection is handled by `nh clean` (weekly, keeps the last 5 generations) instead of `nix.gc`. Run `nh clean all --keep 5` to clean manually.
 
 ## Installing on a New Machine
 

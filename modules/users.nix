@@ -7,6 +7,12 @@
     shell = pkgs.zsh;
   };
 
+  users.users."mochi" = {
+    isNormalUser = true;
+    description = "mochi";
+    extraGroups = [ "networkmanager" "video" "audio" ];
+  };
+
   programs.zsh = {
     enable = true;
     # Home Manager's zsh runs compinit; avoid running it twice

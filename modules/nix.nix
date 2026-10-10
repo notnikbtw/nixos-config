@@ -15,10 +15,14 @@
     trusted-users = [ "root" "@wheel" ];
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
+  programs.nh = {
+    enable = true;
+    flake = "/home/nik/.config/nixos";
+    clean = {
+      enable = true;
+      dates = "weekly";
+      extraArgs = "--keep 5";
+    };
   };
 
   nixpkgs.config.allowUnfree = true;
