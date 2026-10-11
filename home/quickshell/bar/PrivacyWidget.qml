@@ -1,5 +1,5 @@
 import Quickshell
-import Quickshell.Io
+import Quickshell.Services.Pipewire
 import QtQuick
 import QtQuick.Layouts
 import ".."
@@ -7,44 +7,27 @@ import ".."
 Item {
     id: root
 
-    property bool micActive: false
-    property bool camActive: false
+    // Client streams that read from a mic or camera, straight from PipeWire (no polling)
+    readonly property var streams: Pipewire.nodes.values.filter(n => n.isStream)
+
+    PwObjectTracker {
+        objects: root.streams
+    }
+
+    function isActive(mediaClass) {
+        return root.streams.some(n => n.ready
+            && n.properties["media.class"] === mediaClass
+            // pavucontrol and similar tools open a level-meter stream; that is not recording
+            && n.properties["media.name"] !== "Peak detect")
+    }
+
+    readonly property bool micActive: isActive("Stream/Input/Audio")
+    readonly property bool camActive: isActive("Stream/Input/Video")
 
     visible: micActive || camActive
 
     implicitWidth: row.implicitWidth + 12
     implicitHeight: 22
-
-    Timer {
-        interval: 2000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            checkMic.running = true
-            checkCam.running = true
-        }
-    }
-
-    Process {
-        id: checkMic
-        command: ["sh", "-c", "pw-cli ls Node 2>/dev/null | grep -F '\"Stream/Input/Audio\"' >/dev/null && echo 'on' || echo 'off'"]
-        stdout: SplitParser {
-            onRead: data => {
-                root.micActive = (data.trim() === "on")
-            }
-        }
-    }
-
-    Process {
-        id: checkCam
-        command: ["sh", "-c", "pw-cli ls Node 2>/dev/null | grep -F '\"Stream/Input/Video\"' >/dev/null && echo 'on' || echo 'off'"]
-        stdout: SplitParser {
-            onRead: data => {
-                root.camActive = (data.trim() === "on")
-            }
-        }
-    }
 
     Rectangle {
         anchors.fill: parent

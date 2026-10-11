@@ -18,6 +18,9 @@
     };
   };
 
+  # Battery and power profile data for the Quickshell bar
+  services.upower.enable = true;
+
   services.blueman.enable = true;
   services.udisks2.enable = true;
 }

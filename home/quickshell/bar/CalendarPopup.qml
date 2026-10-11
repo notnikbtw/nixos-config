@@ -9,9 +9,14 @@ PopupWindow {
 
     property var currentTime: new Date()
 
+    // Months shown relative to the current one (0 = this month)
+    property int monthOffset: 0
+    readonly property var viewDate: new Date(currentTime.getFullYear(), currentTime.getMonth() + monthOffset, 1)
+
     onVisibleChanged: {
         if (visible) {
             currentTime = new Date()
+            monthOffset = 0
         }
     }
 
@@ -52,6 +57,14 @@ PopupWindow {
         border.width: 1
         border.color: Theme.bg2
 
+        MouseArea {
+            anchors.fill: parent
+            onWheel: wheel => {
+                if (wheel.angleDelta.y > 0) calWindow.monthOffset -= 1
+                else if (wheel.angleDelta.y < 0) calWindow.monthOffset += 1
+            }
+        }
+
         ColumnLayout {
             id: calLayout
             anchors.fill: parent
@@ -62,12 +75,59 @@ PopupWindow {
                 spacing: 2
                 Layout.fillWidth: true
 
-                Text {
-                    text: Qt.formatDateTime(calWindow.currentTime, "MMMM yyyy")
-                    font.family: Theme.fontMono
-                    font.pixelSize: Theme.fontSizeNormal
-                    font.bold: true
-                    color: Theme.fgHigh
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 4
+
+                    // Month title; click to jump back to the current month
+                    Text {
+                        text: Qt.formatDateTime(calWindow.viewDate, "MMMM yyyy")
+                        font.family: Theme.fontMono
+                        font.pixelSize: Theme.fontSizeNormal
+                        font.bold: true
+                        color: titleMouse.containsMouse && calWindow.monthOffset !== 0 ? Theme.accent : Theme.fgHigh
+                        Layout.fillWidth: true
+
+                        MouseArea {
+                            id: titleMouse
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: calWindow.monthOffset !== 0 ? Qt.PointingHandCursor : Qt.ArrowCursor
+                            onClicked: calWindow.monthOffset = 0
+                        }
+                    }
+
+                    Repeater {
+                        model: [
+                            { glyph: "󰅁", step: -1 },
+                            { glyph: "󰅂", step: 1 }
+                        ]
+
+                        delegate: Rectangle {
+                            required property var modelData
+
+                            implicitWidth: 22
+                            implicitHeight: 22
+                            radius: Theme.radius
+                            color: navMouse.containsMouse ? Theme.bg2 : "transparent"
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: parent.modelData.glyph
+                                font.family: Theme.fontMono
+                                font.pixelSize: Theme.fontSizeNormal
+                                color: navMouse.containsMouse ? Theme.fgHigh : Theme.fgDim
+                            }
+
+                            MouseArea {
+                                id: navMouse
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: calWindow.monthOffset += parent.modelData.step
+                            }
+                        }
+                    }
                 }
 
                 Text {
@@ -109,11 +169,15 @@ PopupWindow {
                 columns: 7
                 rowSpacing: 4
                 columnSpacing: 6
-                Layout.alignment: Qt.AlignHCenter
 
-                readonly property int year: calWindow.currentTime.getFullYear()
-                readonly property int month: calWindow.currentTime.getMonth()
+                readonly property int year: calWindow.viewDate.getFullYear()
+                readonly property int month: calWindow.viewDate.getMonth()
                 readonly property int today: calWindow.currentTime.getDate()
+                readonly property bool showToday: calWindow.monthOffset === 0
+
+                // Always reserve six rows so the popup does not change height between months
+                Layout.preferredHeight: 6 * 24 + 5 * rowSpacing
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
                 readonly property int firstDayIndex: {
                     let d = new Date(year, month, 1).getDay()
@@ -128,7 +192,7 @@ PopupWindow {
                         required property int index
                         readonly property int dayNum: index - daysGrid.firstDayIndex + 1
                         readonly property bool isDay: index >= daysGrid.firstDayIndex
-                        readonly property bool isToday: isDay && dayNum === daysGrid.today
+                        readonly property bool isToday: isDay && daysGrid.showToday && dayNum === daysGrid.today
 
                         Layout.preferredWidth: 24
                         Layout.preferredHeight: 24

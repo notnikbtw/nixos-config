@@ -1,21 +1,18 @@
+import Quickshell
 import QtQuick
 import ".."
 
-Item {
+BarButton {
     id: root
 
-    implicitWidth: timeText.implicitWidth + 8
-    implicitHeight: 24
+    active: calendarPopup.visible
 
-    property var currentTime: new Date()
-    readonly property string timeStr: Qt.formatDateTime(currentTime, "HH:mm")
-
-    Timer {
-        interval: 10000
-        running: true
-        repeat: true
-        onTriggered: root.currentTime = new Date()
+    SystemClock {
+        id: clock
+        precision: SystemClock.Minutes
     }
+
+    readonly property string timeStr: Qt.formatDateTime(clock.date, "HH:mm")
 
     CalendarPopup {
         id: calendarPopup
@@ -23,33 +20,16 @@ Item {
         visible: false
     }
 
-    Rectangle {
-        id: bgBox
-        anchors.fill: parent
-        radius: Theme.radius
-        color: (mouseArea.containsMouse || calendarPopup.visible) ? Theme.bg1 : "transparent"
+    onClicked: {
+        calendarPopup.currentTime = clock.date
+        calendarPopup.visible = !calendarPopup.visible
     }
 
     Text {
-        id: timeText
-        anchors.centerIn: parent
         text: root.timeStr
         font.family: Theme.fontMono
         font.pixelSize: Theme.fontSizeNormal
         font.bold: true
         color: Theme.fgHigh
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            const now = new Date()
-            root.currentTime = now
-            calendarPopup.currentTime = now
-            calendarPopup.visible = !calendarPopup.visible
-        }
     }
 }

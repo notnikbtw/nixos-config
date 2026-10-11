@@ -14,45 +14,51 @@ Item {
     property real prevIdle: 0
     property real prevTotal: 0
 
-    Process {
-        id: statProc
-        command: [
-            "awk",
-            "/^cpu / {idle=$5+$6; for(i=2;i<=NF;i++) total+=$i; print \"cpu\", idle, total; nextfile} /^MemTotal:/ {t=$2} /^MemAvailable:/ {a=$2} END {print \"mem\", int((t-a)*100/t)}",
-            "/proc/stat",
-            "/proc/meminfo"
-        ]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                let parts = data.trim().split(/\s+/)
-                if (parts.length >= 3 && parts[0] === "cpu") {
-                    let idle = parseFloat(parts[1])
-                    let total = parseFloat(parts[2])
-                    if (root.prevTotal > 0) {
-                        let diffIdle = idle - root.prevIdle
-                        let diffTotal = total - root.prevTotal
-                        if (diffTotal > 0) {
-                            root.cpuPercent = Math.max(0, Math.min(100, Math.round((1 - diffIdle / diffTotal) * 100)))
-                        }
-                    }
-                    root.prevIdle = idle
-                    root.prevTotal = total
-                } else if (parts.length >= 2 && parts[0] === "mem") {
-                    let mem = parseInt(parts[1])
-                    if (!isNaN(mem)) {
-                        root.memPercent = mem
-                    }
-                }
+    // Read straight from /proc (no process spawn); each file is parsed when its reload completes
+    FileView {
+        id: statFile
+        path: "/proc/stat"
+        onLoaded: {
+            const cpu = text().split("\n", 1)[0].trim().split(/\s+/).slice(1).map(Number)
+            if (cpu.length < 5) return
+
+            const idle = cpu[3] + cpu[4]
+            const total = cpu.reduce((sum, v) => sum + v, 0)
+            if (root.prevTotal > 0) {
+                const diffIdle = idle - root.prevIdle
+                const diffTotal = total - root.prevTotal
+                if (diffTotal > 0)
+                    root.cpuPercent = Math.max(0, Math.min(100, Math.round((1 - diffIdle / diffTotal) * 100)))
             }
+            root.prevIdle = idle
+            root.prevTotal = total
         }
     }
+
+    FileView {
+        id: memFile
+        path: "/proc/meminfo"
+        onLoaded: {
+            const mem = text()
+            const total = parseInt((mem.match(/^MemTotal:\s+(\d+)/m) || [])[1])
+            const avail = parseInt((mem.match(/^MemAvailable:\s+(\d+)/m) || [])[1])
+            if (total > 0 && !isNaN(avail))
+                root.memPercent = Math.round((total - avail) * 100 / total)
+        }
+    }
+
+    function update() {
+        statFile.reload()
+        memFile.reload()
+    }
+
+    Component.onCompleted: update()
 
     Timer {
         interval: 3000
         running: true
         repeat: true
-        onTriggered: statProc.running = true
+        onTriggered: root.update()
     }
 
     RowLayout {

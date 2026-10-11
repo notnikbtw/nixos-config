@@ -4,16 +4,16 @@ import Quickshell.Hyprland
 import QtQuick
 import ".."
 
-Item {
+BarButton {
     id: root
+
+    acceptedButtons: Qt.LeftButton | Qt.RightButton
+    minWidth: 24
 
     property string screenName: ""
     property bool isRecording: false
     property double startTime: 0
     property int elapsedSeconds: 0
-
-    implicitWidth: 24
-    implicitHeight: 24
 
     function formatTime(totalSec) {
         let m = Math.floor(totalSec / 60)
@@ -34,7 +34,8 @@ Item {
         }
         let scriptPath = Quickshell.shellDir + "/scripts/record-toggle.sh"
         Quickshell.execDetached(["bash", scriptPath, mon || ""])
-        statusChecker.running = true
+        afterToggle.checksLeft = 5
+        afterToggle.restart()
     }
 
     function openFolder() {
@@ -68,24 +69,47 @@ Item {
         }
     }
 
+    // Elapsed counter: plain JS, no process
     Timer {
         interval: 1000
+        running: root.isRecording
+        repeat: true
+        onTriggered: root.updateElapsed()
+    }
+
+    // Idle: slow check to notice recordings started elsewhere.
+    // Recording: faster check to notice the recorder dying or being stopped.
+    Timer {
+        interval: root.isRecording ? 3000 : 10000
         running: true
+        repeat: true
+        onTriggered: statusChecker.running = true
+    }
+
+    // Re-check shortly after a toggle, once the script has started/stopped the recorder
+    Timer {
+        id: afterToggle
+        property int checksLeft: 0
+        interval: 800
         repeat: true
         onTriggered: {
             statusChecker.running = true
-            root.updateElapsed()
+            checksLeft -= 1
+            if (checksLeft <= 0) stop()
         }
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: Theme.radius
-        color: mouseArea.containsMouse ? Theme.bg1 : "transparent"
+    onClicked: mouse => {
+        if (mouse.button === Qt.LeftButton) {
+            root.toggleRecording()
+        } else if (mouse.button === Qt.RightButton) {
+            root.openFolder()
+        }
     }
 
     Item {
-        anchors.fill: parent
+        implicitWidth: 16
+        implicitHeight: 16
 
         Rectangle {
             anchors.centerIn: parent
@@ -99,32 +123,16 @@ Item {
         Text {
             anchors.centerIn: parent
             visible: !root.isRecording
-            text: ""
+            text: "\uf03d"
             font.family: Theme.fontMono
             font.pixelSize: Theme.fontSizeNormal
-            color: mouseArea.containsMouse ? Theme.orange : Theme.fg2
-        }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-        onClicked: mouse => {
-            if (mouse.button === Qt.LeftButton) {
-                root.toggleRecording()
-            } else if (mouse.button === Qt.RightButton) {
-                root.openFolder()
-            }
+            color: root.containsMouse ? Theme.orange : Theme.fg2
         }
     }
 
     PopupWindow {
         id: tooltipWindow
-        visible: root.isRecording && mouseArea.containsMouse
+        visible: root.isRecording && root.containsMouse
         color: "transparent"
 
         anchor {

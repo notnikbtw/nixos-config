@@ -1,13 +1,10 @@
 import Quickshell
 import Quickshell.Services.Pipewire
 import QtQuick
-import QtQuick.Layouts
 import ".."
 
-Item {
+BarButton {
     id: root
-    implicitWidth: audioRow.implicitWidth + 8
-    implicitHeight: 24
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]
@@ -25,39 +22,19 @@ Item {
         return "󰕾"
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: Theme.radius
-        color: mouseArea.containsMouse ? Theme.bg1 : "transparent"
+    onClicked: Quickshell.execDetached(["pavucontrol"])
+
+    Text {
+        text: root.icon
+        font.family: Theme.fontMono
+        font.pixelSize: Theme.fontSizeNormal
+        color: root.muted ? Theme.fgMuted : Theme.fgDim
     }
 
-    RowLayout {
-        id: audioRow
-        anchors.centerIn: parent
-        spacing: 4
-
-        Text {
-            text: root.icon
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fontSizeNormal
-            color: root.muted ? Theme.fgMuted : Theme.fgDim
-        }
-
-        Text {
-            text: root.muted ? "Muted" : (root.volPercent + "%")
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fontSizeNormal
-            color: root.muted ? Theme.fgMuted : Theme.fgText
-        }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            Quickshell.execDetached(["pavucontrol"])
-        }
+    Text {
+        text: root.muted ? "Muted" : (root.volPercent + "%")
+        font.family: Theme.fontMono
+        font.pixelSize: Theme.fontSizeNormal
+        color: root.muted ? Theme.fgMuted : Theme.fgText
     }
 }

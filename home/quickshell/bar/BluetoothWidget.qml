@@ -1,35 +1,17 @@
 import Quickshell
-import Quickshell.Io
+import Quickshell.Bluetooth
 import QtQuick
 import QtQuick.Layouts
 import ".."
 
-Item {
+BarButton {
     id: root
-    implicitWidth: btRow.implicitWidth + 8
-    implicitHeight: 24
 
-    property bool powered: false
-    property int connectedCount: 0
-
-    Process {
-        id: btStatusProc
-        command: ["sh", "-c", "if bluetoothctl show 2>/dev/null | grep -q 'Powered: yes'; then c=$(bluetoothctl devices Connected 2>/dev/null | wc -l); echo on:$c; else echo off:0; fi"]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                let parts = data.trim().split(":")
-                root.powered = (parts[0] === "on")
-                root.connectedCount = parseInt(parts[1]) || 0
-            }
-        }
-    }
-
-    Timer {
-        interval: 5000
-        running: true
-        repeat: true
-        onTriggered: btStatusProc.running = true
+    readonly property var adapter: Bluetooth.defaultAdapter
+    readonly property bool powered: adapter !== null && adapter.enabled
+    readonly property int connectedCount: {
+        if (!Bluetooth.devices) return 0
+        return Bluetooth.devices.values.filter(d => d.connected).length
     }
 
     readonly property string icon: {
@@ -44,40 +26,20 @@ Item {
         return Theme.blue
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: Theme.radius
-        color: mouseArea.containsMouse ? Theme.bg1 : "transparent"
+    onClicked: Quickshell.execDetached(["blueman-manager"])
+
+    Text {
+        text: root.icon
+        font.family: Theme.fontMono
+        font.pixelSize: Theme.fontSizeNormal
+        color: root.btColor
     }
 
-    RowLayout {
-        id: btRow
-        anchors.centerIn: parent
-        spacing: 4
-
-        Text {
-            text: root.icon
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fontSizeNormal
-            color: root.btColor
-        }
-
-        Text {
-            visible: root.connectedCount > 0
-            text: root.connectedCount.toString()
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fontSizeSmall
-            color: root.btColor
-        }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            Quickshell.execDetached(["blueman-manager"])
-        }
+    Text {
+        visible: root.connectedCount > 0
+        text: root.connectedCount.toString()
+        font.family: Theme.fontMono
+        font.pixelSize: Theme.fontSizeSmall
+        color: root.btColor
     }
 }

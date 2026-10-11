@@ -1,46 +1,28 @@
-import Quickshell.Io
+import Quickshell.Services.UPower
 import QtQuick
 import QtQuick.Layouts
 import ".."
 
 RowLayout {
     id: root
-    visible: hasBattery
+
+    readonly property var device: UPower.displayDevice
+
+    visible: device !== null && device.isLaptopBattery && device.isPresent
     spacing: 4
 
-    property bool hasBattery: false
-    property int capacity: 100
-    property string status: "Discharging"
-
-    Process {
-        id: batChecker
-        command: ["sh", "-c", "for b in /sys/class/power_supply/BAT*; do if [ -f \"$b/capacity\" ]; then echo \"$(cat \"$b/capacity\") $(cat \"$b/status\")\"; exit 0; fi; done; echo 'none'"]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                let parts = data.trim().split(/\s+/)
-                if (parts.length >= 2 && parts[0] !== "none") {
-                    let cap = parseInt(parts[0])
-                    if (!isNaN(cap)) {
-                        root.hasBattery = true
-                        root.capacity = cap
-                        root.status = parts[1]
-                        return
-                    }
-                }
-                root.hasBattery = false
-            }
-        }
+    // energy/energyCapacity does not depend on whether `percentage` is 0-1 or 0-100
+    readonly property int capacity: {
+        if (!device) return 0
+        if (device.energyCapacity > 0)
+            return Math.max(0, Math.min(100, Math.round(device.energy / device.energyCapacity * 100)))
+        return Math.round(device.percentage <= 1 ? device.percentage * 100 : device.percentage)
     }
 
-    Timer {
-        interval: 5000
-        running: true
-        repeat: true
-        onTriggered: batChecker.running = true
-    }
+    readonly property bool isCharging: device
+        && (device.state === UPowerDeviceState.Charging
+            || device.state === UPowerDeviceState.FullyCharged)
 
-    readonly property bool isCharging: status === "Charging" || status === "Full"
     readonly property color batColor: {
         if (isCharging) return Theme.aqua
         if (capacity <= 15) return Theme.red

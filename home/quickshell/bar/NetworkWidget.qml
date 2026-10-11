@@ -1,71 +1,50 @@
 import Quickshell
-import Quickshell.Io
+import Quickshell.Networking
 import QtQuick
 import QtQuick.Layouts
 import ".."
 
-Item {
+BarButton {
     id: root
-    implicitWidth: netRow.implicitWidth + 8
-    implicitHeight: 24
 
-    property string iface: ""
-    property bool isConnected: iface !== "" && iface !== "none"
-    property bool isWifi: isConnected && iface.startsWith("w")
-    property bool isEthernet: isConnected && iface.startsWith("e")
+    // Straight from NetworkManager; no polling and no dependence on the default route,
+    // so a VPN or Tailscale interface does not confuse the icon.
+    readonly property var devices: Networking.devices.values
 
-    Process {
-        id: netProc
-        command: ["sh", "-c", "ip route get 1.1.1.1 2>/dev/null | grep -oP 'dev \\K\\S+' || echo 'none'"]
-        running: true
-        stdout: SplitParser {
-            onRead: data => {
-                root.iface = data.trim()
-            }
-        }
-    }
+    readonly property var wiredUp: devices.find(d => d.type === DeviceType.Wired && d.connected) || null
+    readonly property var wifiDev: devices.find(d => d.type === DeviceType.Wifi && d.connected) || null
+    readonly property var wifiNet: wifiDev ? (wifiDev.networks.values.find(n => n.connected) || null) : null
 
-    Timer {
-        interval: 5000
-        running: true
-        repeat: true
-        onTriggered: netProc.running = true
-    }
+    readonly property bool isConnected: wiredUp !== null || wifiDev !== null
+    // The signal is a 0-1 fraction; accept 0-100 too
+    readonly property real signal: wifiNet ? (wifiNet.signalStrength > 1 ? wifiNet.signalStrength / 100 : wifiNet.signalStrength) : 0
+    readonly property bool limited: isConnected
+        && (Networking.connectivity === NetworkConnectivity.Limited
+            || Networking.connectivity === NetworkConnectivity.Portal
+            || Networking.connectivity === NetworkConnectivity.None)
 
     readonly property string icon: {
-        if (isWifi) return ""
-        if (isEthernet) return "󰈀"
-        return "󰤮"
-    }
-
-    readonly property color netColor: isConnected ? Theme.blue : Theme.red
-
-    Rectangle {
-        anchors.fill: parent
-        radius: Theme.radius
-        color: mouseArea.containsMouse ? Theme.bg1 : "transparent"
-    }
-
-    RowLayout {
-        id: netRow
-        anchors.centerIn: parent
-        spacing: 4
-
-        Text {
-            text: root.icon
-            font.family: Theme.fontMono
-            font.pixelSize: Theme.fontSizeNormal
-            color: root.netColor
+        // Wired wins over Wi-Fi when both are up
+        if (wiredUp) return "󰈀"
+        if (wifiDev) {
+            if (signal >= 0.75) return "󰤨"
+            if (signal >= 0.5) return "󰤥"
+            if (signal >= 0.25) return "󰤢"
+            return "󰤟"
         }
+        return Networking.wifiEnabled ? "󰤮" : "󰤭"
     }
 
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: {
-            Quickshell.execDetached(["nm-connection-editor"])
-        }
+    readonly property color netColor: !isConnected ? Theme.red
+                                    : limited ? Theme.yellow
+                                    : Theme.blue
+
+    onClicked: Quickshell.execDetached(["nm-connection-editor"])
+
+    Text {
+        text: root.icon
+        font.family: Theme.fontMono
+        font.pixelSize: Theme.fontSizeNormal
+        color: root.netColor
     }
 }

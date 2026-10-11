@@ -4,19 +4,20 @@ import QtQuick
 import QtQuick.Layouts
 import ".."
 
-Item {
+BarButton {
     id: root
 
     property bool isActive: false
+    minWidth: 24
 
-    implicitWidth: 24
-    implicitHeight: 24
+    // Checked at startup, after each toggle, and occasionally to catch changes
+    // made elsewhere (another monitor's bar, the script run by hand)
+    Component.onCompleted: statusProc.running = true
 
     Timer {
-        interval: 3000
+        interval: 30000
         running: true
         repeat: true
-        triggeredOnStart: true
         onTriggered: statusProc.running = true
     }
 
@@ -43,25 +44,12 @@ Item {
         checkTimer.restart()
     }
 
-    Rectangle {
-        anchors.fill: parent
-        radius: Theme.radius
-        color: mouseArea.containsMouse ? Theme.bg1 : "transparent"
-    }
+    onClicked: root.toggle()
 
     Text {
-        anchors.centerIn: parent
         text: "󰅶"
         font.family: Theme.fontMono
         font.pixelSize: Theme.fontSizeNormal
-        color: root.isActive ? Theme.accent : (mouseArea.containsMouse ? Theme.fgHigh : Theme.fgMuted)
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: root.toggle()
+        color: root.isActive ? Theme.accent : (root.containsMouse ? Theme.fgHigh : Theme.fgMuted)
     }
 }
