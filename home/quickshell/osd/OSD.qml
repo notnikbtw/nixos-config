@@ -21,6 +21,8 @@ PanelWindow {
     exclusiveZone: 0
     color: "transparent"
 
+    mask: Region {}
+
     readonly property bool hasBar: osdType === "volume" || osdType === "brightness"
 
     visible: false
@@ -85,108 +87,59 @@ PanelWindow {
         }
     }
 
-    function triggerAudio() {
-        osdType = "volume"
-        let vol = Math.max(0, sinkVolume)
-        let percent = Math.round(vol * 100)
-        osdProgress = Math.min(1.0, vol)
+    function volumeIcon(percent) {
+        if (percent <= 0) return "󰝟"
+        if (percent < 33) return "󰕿"
+        if (percent < 66) return "󰖀"
+        return "󰕾"
+    }
 
-        if (sinkMuted || percent === 0) {
-            osdIcon = "󰝟"
-            osdTitle = "Volume"
-            osdValue = "Muted"
-            osdColor = Theme.fgMuted
-        } else {
-            if (percent < 33) osdIcon = "󰕿"
-            else if (percent < 66) osdIcon = "󰖀"
-            else osdIcon = "󰕾"
+    function brightnessIcon(percent) {
+        if (percent < 25) return "󰃞"
+        if (percent < 50) return "󰃟"
+        if (percent < 75) return "󰃝"
+        return "󰃠"
+    }
 
-            osdTitle = "Volume"
-            osdValue = percent + "%"
-            osdColor = Theme.orange
-        }
+    function show(type, icon, title, value, progress, color) {
+        osdType = type
+        osdIcon = icon
+        osdTitle = title
+        osdValue = value
+        osdProgress = progress
+        osdColor = color
         showOSD()
     }
 
-    function triggerMicManual(isMuted: bool) {
-        osdType = "mic"
-        if (isMuted) {
-            osdIcon = "󰍭"
-            osdTitle = "Microphone"
-            osdValue = "Muted"
-            osdProgress = 0.0
-            osdColor = Theme.red
-        } else {
-            osdIcon = "󰍬"
-            osdTitle = "Microphone"
-            osdValue = "Active"
-            osdProgress = 1.0
-            osdColor = Theme.green
-        }
-        showOSD()
+    function triggerAudio() {
+        const vol = Math.max(0, sinkVolume)
+        const percent = Math.round(vol * 100)
+
+        if (sinkMuted || percent === 0)
+            show("volume", volumeIcon(0), "Volume", "Muted", Math.min(1.0, vol), Theme.fgMuted)
+        else
+            show("volume", volumeIcon(percent), "Volume", percent + "%", Math.min(1.0, vol), Theme.orange)
     }
 
     function triggerMic() {
-        triggerMicManual(sourceMuted)
+        if (sourceMuted)
+            show("mic", "󰍭", "Microphone", "Muted", 0.0, Theme.red)
+        else
+            show("mic", "󰍬", "Microphone", "Active", 1.0, Theme.green)
     }
 
-    function triggerBrightness(percent: int) {
-        osdType = "brightness"
-        let clamped = Math.max(0, Math.min(100, percent))
-        osdProgress = clamped / 100.0
-        osdValue = clamped + "%"
-        osdTitle = "Brightness"
-        osdColor = Theme.yellow
-
-        if (clamped < 25) osdIcon = "󰃞"
-        else if (clamped < 50) osdIcon = "󰃟"
-        else if (clamped < 75) osdIcon = "󰃝"
-        else osdIcon = "󰃠"
-
-        showOSD()
+    function triggerBrightness(percent) {
+        const clamped = Math.max(0, Math.min(100, percent))
+        show("brightness", brightnessIcon(clamped), "Brightness", clamped + "%", clamped / 100.0, Theme.yellow)
     }
 
-    function triggerVolumeManual(percent: int) {
-        osdType = "volume"
-        let clamped = Math.max(0, percent)
-        osdProgress = Math.min(1.0, clamped / 100.0)
-        osdTitle = "Volume"
-        osdValue = clamped + "%"
-        osdColor = Theme.orange
-
-        if (clamped === 0) {
-            osdIcon = "󰝟"
-        } else if (clamped < 33) {
-            osdIcon = "󰕿"
-        } else if (clamped < 66) {
-            osdIcon = "󰖀"
-        } else {
-            osdIcon = "󰕾"
-        }
-
-        showOSD()
+    function isOn(state) {
+        return state === "on" || state === "1" || state === "true"
     }
 
-    function triggerCapsLock(state: string) {
-        osdType = "capslock"
-        let isOn = (state === "on" || state === "1" || state === "true")
-        osdTitle = "Caps Lock"
-        osdIcon = "󰘲"
-        osdValue = isOn ? "ON" : "OFF"
-        osdProgress = isOn ? 1.0 : 0.0
-        osdColor = isOn ? Theme.orange : Theme.fgMuted
-        showOSD()
-    }
-
-    function triggerNumLock(state: string) {
-        osdType = "numlock"
-        let isOn = (state === "on" || state === "1" || state === "true")
-        osdTitle = "Num Lock"
-        osdIcon = "󰎠"
-        osdValue = isOn ? "ON" : "OFF"
-        osdProgress = isOn ? 1.0 : 0.0
-        osdColor = isOn ? Theme.orange : Theme.fgMuted
-        showOSD()
+    function triggerToggle(type, icon, title, state, onColor) {
+        const on = isOn(state)
+        show(type, icon, title, on ? "ON" : "OFF", on ? 1.0 : 0.0, on ? onColor : Theme.fgMuted)
     }
 
     function showOSD() {
@@ -230,6 +183,8 @@ PanelWindow {
         }
     }
 
+    // Volume and microphone are driven by PipeWire (see the handlers above), so
+    // they need no IPC. These are called from the scripts in ../scripts.
     IpcHandler {
         target: "osd"
 
@@ -237,21 +192,16 @@ PanelWindow {
             osdWindow.triggerBrightness(percent)
         }
 
-        function showVolume(percent: int): void {
-            osdWindow.triggerVolumeManual(percent)
-        }
-
         function showCapsLock(state: string): void {
-            osdWindow.triggerCapsLock(state)
+            osdWindow.triggerToggle("capslock", "󰘲", "Caps Lock", state, Theme.orange)
         }
 
         function showNumLock(state: string): void {
-            osdWindow.triggerNumLock(state)
+            osdWindow.triggerToggle("numlock", "󰎠", "Num Lock", state, Theme.orange)
         }
 
-        function showMic(state: string): void {
-            let isMuted = (state === "muted" || state === "1" || state === "true")
-            osdWindow.triggerMicManual(isMuted)
+        function showAirplane(state: string): void {
+            osdWindow.triggerToggle("airplane", "󰀝", "Airplane Mode", state, Theme.aqua)
         }
     }
 
