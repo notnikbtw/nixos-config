@@ -22,7 +22,8 @@
     awww
     hyprsunset
     quickshell
-    rofi
+    (rofi.override { plugins = [ rofi-calc ]; })
+    libqalculate
     libnotify
     grim
     slurp

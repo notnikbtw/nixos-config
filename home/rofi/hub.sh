@@ -97,7 +97,7 @@ main_menu() {
                 menu_settings
                 ;;
             *"Clipboard"*)
-                cliphist list | rofi -dmenu -p "Clipboard" | cliphist decode | wl-copy
+                "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/clipboard.sh"
                 exit 0
                 ;;
             *"Screenshot"*)
@@ -117,4 +117,7 @@ main_menu() {
     done
 }
 
-main_menu
+case "$1" in
+    settings) menu_settings ;;
+    *) main_menu ;;
+esac

@@ -1,6 +1,12 @@
 @import "~/.config/themes/current/colors.rasi"
 @import "~/.config/rofi/font.rasi"
 
+configuration {
+    show-icons: true;
+    icon-theme: "Papirus-Dark";
+    drun-display-format: "{name}";
+}
+
 * {
     background-color: transparent;
     text-color: @fg1;
