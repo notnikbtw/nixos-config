@@ -17,15 +17,17 @@
     xwayland.enable = true;
   };
 
-  # Hyprland started without UWSM never activates graphical-session.target,
-  # which xdg-desktop-portal requires (Requisite=) — no portal, no screen sharing.
-  # Started from autostart.lua once the session environment is imported.
+  # Without UWSM nothing activates graphical-session.target, which
+  # xdg-desktop-portal needs (screen sharing). autostart.lua starts this target.
   systemd.user.targets.hyprland-session = {
     description = "Hyprland compositor session";
     bindsTo = [ "graphical-session.target" ];
     wants = [ "graphical-session-pre.target" ];
     after = [ "graphical-session-pre.target" ];
   };
+
+  # Opens TCP/UDP 53317
+  programs.localsend.enable = true;
 
   security.polkit.enable = true;
   security.rtkit.enable = true;

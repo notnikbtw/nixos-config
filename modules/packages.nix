@@ -2,6 +2,7 @@
 {
   environment.systemPackages = (with pkgs; [
     telegram-desktop
+    librewolf
     wget
     btop
     imv
@@ -17,6 +18,8 @@
     obsidian
     prismlauncher
     libreoffice
+    exiftool
+    mat2
 
     hyprlock
     awww
@@ -43,7 +46,6 @@
     bat
     ripgrep
     fd
-    fastfetch
     hyfetch
     fortune
     zoxide
@@ -52,7 +54,7 @@
 
     vscode
     go
-    nodejs_22
+    nodejs_24
     pnpm
     python3
     gcc

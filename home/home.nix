@@ -14,6 +14,7 @@
     ./theme.nix
     ./btop.nix
     ./firefox.nix
+    ./fastfetch.nix
   ];
 
   xdg.mimeApps = {
