@@ -6,7 +6,7 @@
     "/nix".options  = [ "compress=zstd" "noatime" ];
   };
 
-  # Monthly checksum verification picks "/" automatically
+  # Monthly checksum verification
   services.btrfs.autoScrub.enable = true;
 
   services.snapper.configs.home = {
@@ -35,6 +35,5 @@
     '';
   };
 
-  # Snapshots are readable by root only also enforced on every boot and switch
   systemd.tmpfiles.rules = [ "z /home/.snapshots 0700 root root -" ];
 }

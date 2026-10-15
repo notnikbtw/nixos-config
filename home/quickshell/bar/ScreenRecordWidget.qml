@@ -69,7 +69,6 @@ BarButton {
         }
     }
 
-    // Elapsed counter: plain JS, no process
     Timer {
         interval: 1000
         running: root.isRecording
@@ -77,8 +76,6 @@ BarButton {
         onTriggered: root.updateElapsed()
     }
 
-    // Idle: slow check to notice recordings started elsewhere.
-    // Recording: faster check to notice the recorder dying or being stopped.
     Timer {
         interval: root.isRecording ? 3000 : 10000
         running: true
@@ -86,7 +83,7 @@ BarButton {
         onTriggered: statusChecker.running = true
     }
 
-    // Re-check shortly after a toggle, once the script has started/stopped the recorder
+    // Check again a short while after the switch, once the script has started or stopped recording
     Timer {
         id: afterToggle
         property int checksLeft: 0

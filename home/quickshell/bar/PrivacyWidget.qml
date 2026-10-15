@@ -17,7 +17,6 @@ Item {
     function isActive(mediaClass) {
         return root.streams.some(n => n.ready
             && n.properties["media.class"] === mediaClass
-            // pavucontrol and similar tools open a level-meter stream; that is not recording
             && n.properties["media.name"] !== "Peak detect")
     }
 

@@ -12,7 +12,6 @@
     extraConfig = ''
       source-file ~/.config/themes/current/tmux.conf
 
-      # Truecolor passthrough for theme hex colors
       set -as terminal-features ",xterm-kitty:RGB"
 
       bind | split-window -h -c "#{pane_current_path}"

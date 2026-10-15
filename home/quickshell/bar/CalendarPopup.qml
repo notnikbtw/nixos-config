@@ -9,7 +9,6 @@ PopupWindow {
 
     property var currentTime: new Date()
 
-    // Months shown relative to the current one (0 = this month)
     property int monthOffset: 0
     readonly property var viewDate: new Date(currentTime.getFullYear(), currentTime.getMonth() + monthOffset, 1)
 
@@ -175,7 +174,6 @@ PopupWindow {
                 readonly property int today: calWindow.currentTime.getDate()
                 readonly property bool showToday: calWindow.monthOffset === 0
 
-                // Always reserve six rows so the popup does not change height between months
                 Layout.preferredHeight: 6 * 24 + 5 * rowSpacing
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 

@@ -53,7 +53,6 @@ hl.config({
   misc = {
     force_default_wallpaper = 0,
     disable_hyprland_logo   = true,
-    -- Any key or mouse movement wakes a screen switched off by the standby key (F10)
     key_press_enables_dpms  = true,
     mouse_move_enables_dpms = true,
   },

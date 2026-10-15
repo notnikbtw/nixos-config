@@ -1,7 +1,7 @@
 # NixOS dotfiles
 
-<a href="https://portfolio-notnikbtw.vercel.app/" target="_blank" rel="noopener noreferrer">
-  <img src="https://portfolio-notnikbtw.vercel.app/buttons/notnik.png" alt="!Nik - 88x31 Button" width="88" height="31" />
+<a href="https://www.notnikbtw.dev" target="_blank" rel="noopener noreferrer">
+  <img src="https://www.notnikbtw.dev/buttons/notnik.png" alt="!Nik - 88x31 Button" width="88" height="31" />
 </a>
 
 [![NixOS Unstable](https://img.shields.io/badge/NixOS-unstable-blue.svg?logo=nixos&logoColor=white)](https://nixos.org)
@@ -31,7 +31,7 @@ My personal modular NixOS configuration for desktop and laptop running Hyprland
 - **Storage:** Btrfs on LUKS (zstd compression, `noatime`, monthly scrub), Snapper snapshots of `/home`, zram swap
 - **AI Stack:** Docker Ollama, `llm-agents.nix` (`opencode`, `antigravity-cli`, `claude-code`)
 - **Wallpaper Daemon:** `awww`
-- **Dynamic Theming:** Instant switching across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland (Gruvbox, Kanagawa, Miasma)
+- **Theming:** Gruvbox, applied declaratively across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland
 
 ## Declarative Per-Host UI Scaling
 

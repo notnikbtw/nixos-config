@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Clipboard history picker (cliphist + rofi).
+
 #   Enter       copy the selected entry
 #   Alt+Delete  remove the selected entry and keep the list open
-#   First row   clear the whole history (asks for confirmation)
+#   First row   clear the whole history
 
 clear_label="󰆴  Clear History"
 

@@ -9,7 +9,6 @@ BarButton {
     visible: available
     minWidth: 24
 
-    // Checked once at startup: the daemon only runs on some hosts (e.g. not the desktop)
     property bool available: false
 
     Process {

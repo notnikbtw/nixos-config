@@ -14,7 +14,7 @@ Item {
     property real prevIdle: 0
     property real prevTotal: 0
 
-    // Read straight from /proc (no process spawn); each file is parsed when its reload completes
+    // Read straight from /proc (no process spawn)
     FileView {
         id: statFile
         path: "/proc/stat"

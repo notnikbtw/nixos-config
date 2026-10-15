@@ -1,8 +1,7 @@
 { lib, hostname ? "desktop", ... }:
 let
-  # Declarative scaling profiles per device:
-  # - desktop: 27" 1440p displays (compact UI)
-  # - laptop: 16" 2.5K high-DPI display (scaled UI)
+  # desktop: 27" 1440p
+  # laptop: 16" 2.5K
   profiles = {
     desktop = {
       fontSize = 11;

@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Usage: osd-lock.sh caps|num
-# Reads the lock state (keyboard LED first, Hyprland as fallback) and shows it in the OSD
 
 case "$1" in
     caps) led="capslock"; key="capsLock"; method="showCapsLock" ;;

@@ -11,7 +11,7 @@ RowLayout {
     visible: device !== null && device.isLaptopBattery && device.isPresent
     spacing: 4
 
-    // energy/energyCapacity does not depend on whether `percentage` is 0-1 or 0-100
+    // energyCapacity does not depend on whether `percentage` is 0-1 or 0-100
     readonly property int capacity: {
         if (!device) return 0
         if (device.energyCapacity > 0)

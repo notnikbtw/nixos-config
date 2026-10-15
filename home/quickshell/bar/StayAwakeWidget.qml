@@ -10,8 +10,7 @@ BarButton {
     property bool isActive: false
     minWidth: 24
 
-    // Checked at startup, after each toggle, and occasionally to catch changes
-    // made elsewhere (another monitor's bar, the script run by hand)
+    // Checked at startup, after each toggle
     Component.onCompleted: statusProc.running = true
 
     Timer {

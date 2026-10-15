@@ -2,12 +2,9 @@ import QtQuick
 import QtQuick.Layouts
 import ".."
 
-// Hover-highlighted, clickable bar item. Children (usually Text) are laid out
-// in a centered row; non-visual children (Timer, Process, ...) are fine too.
 Item {
     id: root
 
-    // Keeps the highlight while something belonging to the button is open (e.g. a popup)
     property bool active: false
     property real minWidth: 0
     property real horizontalPadding: 8
