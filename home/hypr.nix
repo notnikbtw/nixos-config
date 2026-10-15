@@ -15,5 +15,4 @@
   '';
   xdg.configFile."hypr/lua".source           = ./hypr/lua;
   xdg.configFile."hypr/scripts".source       = ./hypr/scripts;
-  xdg.configFile."hypr/wallpaper.png".source = ./hypr/wallpaper/gruv-wallhaven-011km1.png;
 }

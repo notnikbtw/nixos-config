@@ -4,12 +4,11 @@ local fileManager = "thunar"
 local browser     = "firefox"
 local menu        = "rofi -show drun"
 local powermenu   = os.getenv("HOME") .. "/.config/rofi/powermenu.sh"
-local themeSwitcher = os.getenv("HOME") .. "/.config/rofi/theme-switcher.sh"
-local wallpaperSwitcher = os.getenv("HOME") .. "/.config/rofi/wallpaper-switcher.sh"
 local hubMenu           = os.getenv("HOME") .. "/.config/rofi/hub.sh"
 local brightnessScript  = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-brightness.sh"
 local lockScript        = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-lock.sh"
 local airplaneScript    = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-airplane.sh"
+local wallpaperSwitcher = os.getenv("HOME") .. "/.config/rofi/wallpaper-switcher.sh"
 local ocrScript         = os.getenv("HOME") .. "/.config/hypr/scripts/ocr-extract.sh"
 
 local recordToggleScript = os.getenv("HOME") .. "/.config/quickshell/scripts/record-toggle.sh"
@@ -40,7 +39,6 @@ hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd(powermenu))
 hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd(recordToggleScript .. " fullscreen"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload && notify-send 'Hyprland' 'Config reloaded'"))
 hl.bind(mainMod .. " + SHIFT + O", hl.dsp.exec_cmd(ocrScript))
-hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd(themeSwitcher))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(wallpaperSwitcher))
 hl.bind(mainMod .. " + backslash", hl.dsp.layout("togglesplit"))
 

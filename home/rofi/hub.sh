@@ -20,16 +20,12 @@ toggle_nightlight() {
 
 menu_customization() {
     while true; do
-        local options="󰌌  Back\n󰉼  Themes\n󰸉  Wallpapers\n󰃠  Night Light (Toggle)"
+        local options="󰌌  Back\n󰸉  Wallpapers\n󰃠  Night Light (Toggle)"
         local chosen
         chosen="$(echo -e "$options" | $ROFI_CMD -p "Customize")"
         case "$chosen" in
             *"Back"*|"")
                 return 0
-                ;;
-            *"Themes"*)
-                "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/theme-switcher.sh"
-                exit 0
                 ;;
             *"Wallpapers"*)
                 "${XDG_CONFIG_HOME:-$HOME/.config}/rofi/wallpaper-switcher.sh"

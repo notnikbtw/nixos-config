@@ -12,11 +12,6 @@
     source = ./rofi/powermenu.sh;
     executable = true;
   };
-  xdg.configFile."rofi/themes.rasi".source = ./rofi/themes.rasi;
-  xdg.configFile."rofi/theme-switcher.sh" = {
-    source = ./rofi/theme-switcher.sh;
-    executable = true;
-  };
   xdg.configFile."rofi/wallpapers.rasi".source = ./rofi/wallpapers.rasi;
   xdg.configFile."rofi/wallpaper-switcher.sh" = {
     source = ./rofi/wallpaper-switcher.sh;

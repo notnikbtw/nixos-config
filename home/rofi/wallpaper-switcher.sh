@@ -1,50 +1,22 @@
 #!/usr/bin/env bash
 
 THEMES_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/themes"
-STATE_BASE="${XDG_STATE_HOME:-$HOME/.local/state}/themes"
 ROFI_THEME="${XDG_CONFIG_HOME:-$HOME/.config}/rofi/wallpapers.rasi"
-
-THEME=""
-if [ -f "$STATE_BASE/current-theme" ]; then
-    THEME=$(cat "$STATE_BASE/current-theme" 2>/dev/null)
-fi
-
-if [ -z "$THEME" ] && [ -L "$THEMES_DIR/current" ]; then
-    THEME=$(basename "$(readlink -f "$THEMES_DIR/current")")
-fi
-
-if [ -z "$THEME" ]; then
-    THEME="gruvbox"
-fi
-
-STATE_THEME_DIR="$STATE_BASE/$THEME"
-mkdir -p "$STATE_THEME_DIR"
-
-DIRS=(
-    "$HOME/Pictures/Wallpapers/$THEME"
-    "$THEMES_DIR/$THEME/wallpapers"
-)
+CURRENT="$THEMES_DIR/current-wallpaper.png"
 
 wallpapers=()
 while IFS= read -r -d '' file; do
     wallpapers+=("$file")
-done < <(find -L "${DIRS[@]}" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -print0 2>/dev/null | sort -z)
-
-if [ ${#wallpapers[@]} -eq 0 ] && [ -f "$THEMES_DIR/$THEME/wallpaper.png" ]; then
-    wallpapers+=("$THEMES_DIR/$THEME/wallpaper.png")
-fi
+done < <(find -L "$HOME/Pictures/Wallpapers" "$THEMES_DIR/current/wallpapers" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) -print0 2>/dev/null | sort -z)
 
 if [ ${#wallpapers[@]} -eq 0 ]; then
-    notify-send -u low -a "Wallpaper Switcher" "No wallpapers found" "Add wallpapers to ~/.config/themes/$THEME/wallpapers or ~/Pictures/Wallpapers/$THEME" 2>/dev/null || true
+    notify-send -u low -a "Wallpaper" "No wallpapers found" "Add images to ~/Pictures/Wallpapers" 2>/dev/null || true
     exit 0
 fi
 
 current_wall=""
-if [ -f "$STATE_THEME_DIR/wallpaper" ]; then
-    current_wall="$(cat "$STATE_THEME_DIR/wallpaper" 2>/dev/null)"
-fi
-if [ -z "$current_wall" ] && [ -L "$THEMES_DIR/current-wallpaper.png" ]; then
-    current_wall="$(readlink -f "$THEMES_DIR/current-wallpaper.png" 2>/dev/null)"
+if [ -L "$CURRENT" ]; then
+    current_wall="$(readlink -f "$CURRENT" 2>/dev/null)"
 fi
 
 selected_row=0
@@ -68,17 +40,13 @@ for img in "${wallpapers[@]}"; do
     wall_map["$clean_label"]="$img"
     entries+="${clean_label}\0icon\x1f${img}\n"
 
-    if [ "$img" = "$current_wall" ]; then
+    if [ "$(readlink -f "$img")" = "$current_wall" ]; then
         selected_row=$index
     fi
     ((index++))
 done
 
-if [ -f "$ROFI_THEME" ]; then
-    chosen=$(printf "%b" "$entries" | rofi -dmenu -i -p "󰸉 Wallpaper (${THEME^})" -show-icons -theme "$ROFI_THEME" -selected-row "$selected_row")
-else
-    chosen=$(printf "%b" "$entries" | rofi -dmenu -i -p "󰸉 Wallpaper (${THEME^})" -show-icons -selected-row "$selected_row")
-fi
+chosen=$(printf "%b" "$entries" | rofi -dmenu -i -p "󰸉 Wallpaper" -show-icons -theme "$ROFI_THEME" -selected-row "$selected_row")
 
 if [ -z "$chosen" ]; then
     exit 0
@@ -89,17 +57,13 @@ if [ -z "$SELECTED" ] || [ ! -f "$SELECTED" ]; then
     exit 1
 fi
 
-echo "$SELECTED" > "$STATE_THEME_DIR/wallpaper"
-echo "$THEME" > "$STATE_BASE/current-theme"
-ln -sfn "$SELECTED" "$THEMES_DIR/current-wallpaper.png"
+ln -sfn "$SELECTED" "$CURRENT"
 
-if ! pgrep -f awww-daemon >/dev/null 2>&1; then
-    systemd-run --user --unit=awww-daemon awww-daemon 2>/dev/null || awww-daemon &
+if ! pgrep -x awww-daemon >/dev/null 2>&1; then
+    awww-daemon &
     sleep 0.3
 fi
 
-if command -v awww >/dev/null 2>&1; then
-    awww img "$SELECTED" --transition-type fade --transition-duration 0.3 --transition-fps 144
-fi
+awww img "$SELECTED" --transition-type fade --transition-duration 0.3 --transition-fps 144
 
-notify-send -a "Wallpaper" -i "$SELECTED" "Wallpaper changed" "$chosen (${THEME^})" 2>/dev/null || true
+notify-send -a "Wallpaper" -i "$SELECTED" "Wallpaper changed" "$chosen" 2>/dev/null || true

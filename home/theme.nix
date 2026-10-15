@@ -12,8 +12,6 @@
 
   home.packages = with pkgs; [
     gruvbox-gtk-theme
-    # kanagawa-gtk-theme    removed from nixpkgs unstable
-    kanagawa-icon-theme
     papirus-icon-theme
     adwaita-icon-theme
   ];
@@ -43,8 +41,8 @@
     };
   };
 
-  xdg.configFile."themes/gruvbox".source = ./themes/gruvbox;
-  xdg.configFile."themes/kanagawa".source = ./themes/kanagawa;
-  xdg.configFile."themes/miasma".source = ./themes/miasma;
-  xdg.configFile."themes/hooks.d".source = ./themes/hooks.d;
+  xdg.configFile."themes/current".source = ./themes/gruvbox;
+
+  xdg.configFile."gtk-3.0/settings.ini".source = ./themes/gruvbox/gtk3.ini;
+  xdg.configFile."gtk-4.0/settings.ini".source = ./themes/gruvbox/gtk3.ini;
 }
