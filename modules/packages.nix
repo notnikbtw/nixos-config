@@ -24,7 +24,6 @@
     hyprlock
     awww
     hyprsunset
-    quickshell
     (rofi.override { plugins = [ rofi-calc ]; })
     libqalculate
     libnotify

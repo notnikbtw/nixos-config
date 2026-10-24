@@ -28,10 +28,6 @@ hl.bind(mainMod .. " + M", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(clipboardScript))
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd(calcScript))
-hl.bind("F12", hl.dsp.exec_cmd(calcScript))
--- Standby: lock and turn the screen off; hypridle suspends the laptop later if it stays idle
-hl.bind("F10", hl.dsp.exec_cmd([[sh -c 'loginctl lock-session; sleep 1; hyprctl dispatch "hl.dsp.dpms({ action = \"off\" })"']]), { locked = true })
-hl.bind("F9", hl.dsp.exec_cmd(hubMenu .. " settings"))
 hl.bind("XF86Calculator", hl.dsp.exec_cmd(calcScript), { locked = true })
 hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + ALT + Space", hl.dsp.exec_cmd(hubMenu))
@@ -155,3 +151,13 @@ hl.bind(mainMod .. " + SHIFT + comma", hl.dsp.exec_cmd(
     'cliphist wipe && notify-send "Clipboard" "History cleared"'
 ))
 
+-- Laptop-only
+local handle   = io.popen("hostname")
+local hostname = handle:read("*l")
+handle:close()
+
+if hostname == "laptop" then
+  hl.bind("F12", hl.dsp.exec_cmd(calcScript))
+  hl.bind("F10", hl.dsp.exec_cmd([[sh -c 'loginctl lock-session; sleep 1; hyprctl dispatch "hl.dsp.dpms({ action = \"off\" })"']]), { locked = true })
+  hl.bind("F9", hl.dsp.exec_cmd(hubMenu .. " settings"))
+end

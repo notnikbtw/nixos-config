@@ -4,8 +4,10 @@
     hyprpolkitagent
     cliphist
     wl-clipboard
-    hypridle
   ];
+
+  services.hypridle.enable = true;
+  systemd.user.services.hypridle.Unit.X-Restart-Triggers = [ "${./hypr/hypridle.conf}" ];
 
   xdg.configFile."hypr/hyprland.lua".source  = ./hypr/hyprland.lua;
   xdg.configFile."hypr/hypridle.conf".source = ./hypr/hypridle.conf;

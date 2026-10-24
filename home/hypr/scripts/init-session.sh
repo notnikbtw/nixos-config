@@ -7,10 +7,6 @@ init_wallpaper() {
 }
 
 start_daemons() {
-    if ! pidof quickshell >/dev/null; then
-        quickshell -d
-    fi
-
     if ! pidof awww-daemon >/dev/null; then
         awww-daemon &
         sleep 0.4
