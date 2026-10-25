@@ -18,7 +18,7 @@
     };
   };
 
-  # Battery and power profile data for the Quickshell bar
+  # Battery and power profile data for the Waybar
   services.upower.enable = true;
 
   services.blueman.enable = true;

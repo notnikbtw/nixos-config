@@ -5,7 +5,8 @@
   imports = [
     ./settings.nix
     ./hypr.nix
-    ./quickshell.nix
+    ./waybar.nix
+    ./dunst.nix
     ./rofi.nix
     ./kitty.nix
     ./zsh.nix

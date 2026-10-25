@@ -49,7 +49,7 @@ in
     barHeight = lib.mkOption {
       type = lib.types.int;
       default = current.barHeight;
-      description = "Quickshell bar height in pixels";
+      description = "Waybar height in pixels";
     };
   };
 }

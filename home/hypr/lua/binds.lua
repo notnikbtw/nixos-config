@@ -5,13 +5,9 @@ local browser     = "firefox"
 local menu        = "rofi -show drun"
 local powermenu   = os.getenv("HOME") .. "/.config/rofi/powermenu.sh"
 local hubMenu           = os.getenv("HOME") .. "/.config/rofi/hub.sh"
-local brightnessScript  = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-brightness.sh"
-local lockScript        = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-lock.sh"
-local airplaneScript    = os.getenv("HOME") .. "/.config/quickshell/scripts/osd-airplane.sh"
 local wallpaperSwitcher = os.getenv("HOME") .. "/.config/rofi/wallpaper-switcher.sh"
 local ocrScript         = os.getenv("HOME") .. "/.config/hypr/scripts/ocr-extract.sh"
 
-local recordToggleScript = os.getenv("HOME") .. "/.config/quickshell/scripts/record-toggle.sh"
 local calcScript        = os.getenv("HOME") .. "/.config/rofi/calc.sh"
 local clipboardScript   = os.getenv("HOME") .. "/.config/rofi/clipboard.sh"
 
@@ -32,7 +28,6 @@ hl.bind("XF86Calculator", hl.dsp.exec_cmd(calcScript), { locked = true })
 hl.bind(mainMod .. " + Space", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + ALT + Space", hl.dsp.exec_cmd(hubMenu))
 hl.bind(mainMod .. " + Escape", hl.dsp.exec_cmd(powermenu))
-hl.bind(mainMod .. " + ALT + R", hl.dsp.exec_cmd(recordToggleScript .. " fullscreen"))
 hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload && notify-send 'Hyprland' 'Config reloaded'"))
 hl.bind(mainMod .. " + SHIFT + O", hl.dsp.exec_cmd(ocrScript))
 hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd(wallpaperSwitcher))
@@ -112,11 +107,8 @@ hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO
 hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true })
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"))
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(brightnessScript .. " 5%+"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(brightnessScript .. " 5%-"), { locked = true, repeating = true })
-hl.bind("Caps_Lock", hl.dsp.exec_cmd(lockScript .. " caps"), { locked = true, non_consuming = true, ignore_mods = true, release = true })
-hl.bind("Num_Lock", hl.dsp.exec_cmd(lockScript .. " num"), { locked = true, non_consuming = true, ignore_mods = true, release = true })
-hl.bind("XF86RFKill", hl.dsp.exec_cmd(airplaneScript), { locked = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl set 5%+"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set 5%-"), { locked = true, repeating = true })
 
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })

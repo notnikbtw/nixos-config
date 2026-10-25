@@ -21,7 +21,8 @@ My personal modular NixOS configuration for desktop and laptop running Hyprland
 
 - **Login & Session:** greetd + tuigreet
 - **Window Manager:** Hyprland (Lua config)
-- **Status Bar, Notifications & OSD:** Quickshell
+- **Status Bar:** Waybar
+- **Notifications:** Dunst
 - **Application Launcher & Hub:** Rofi Wayland
 - **Screen Locker & Idle:** Hyprlock + Hypridle
 - **Terminal:** Kitty (GPU-accelerated, FiraCode Nerd Font)
@@ -31,7 +32,7 @@ My personal modular NixOS configuration for desktop and laptop running Hyprland
 - **Storage:** Btrfs on LUKS (zstd compression, `noatime`, monthly scrub), Snapper snapshots of `/home`, zram swap
 - **AI Stack:** Docker Ollama, `llm-agents.nix` (`opencode`, `antigravity-cli`, `claude-code`)
 - **Wallpaper Daemon:** `awww`
-- **Theming:** Gruvbox, applied declaratively across GTK, Qt, Kitty, Quickshell, Starship, Btop, Rofi, and Hyprland
+- **Theming:** Gruvbox, applied declaratively across GTK, Qt, Kitty, Waybar, Dunst, Starship, Btop, Rofi, and Hyprland
 
 ## Declarative Per-Host UI Scaling
 
