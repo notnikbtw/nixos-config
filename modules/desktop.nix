@@ -51,10 +51,8 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-hyprland
-    ];
+    # programs.hyprland already adds the hyprland and gtk portals;
+    # listing them here again makes the build fail (duplicate user units)
     config = {
       common = {
         default = [ "hyprland" "gtk" ];
