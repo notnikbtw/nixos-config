@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, hostname, ... }:
 {
   home.packages = with pkgs; [
     hyprpolkitagent
@@ -12,6 +12,9 @@
   xdg.configFile."hypr/hyprland.lua".source  = ./hypr/hyprland.lua;
   xdg.configFile."hypr/hypridle.conf".source = ./hypr/hypridle.conf;
   xdg.configFile."hypr/hyprlock.conf".source = ./hypr/hyprlock.conf;
+  xdg.configFile."hypr/host.lua".text = ''
+    return "${hostname}"
+  '';
   xdg.configFile."hypr/cursor.lua".text = ''
     return { name = "${config.home.pointerCursor.name}", size = ${toString config.home.pointerCursor.size} }
   '';

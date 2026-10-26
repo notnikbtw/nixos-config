@@ -1,7 +1,8 @@
-{ config, lib, pkgs, inputs, hostname ? "desktop", ... }:
+{ config, osConfig, lib, pkgs, inputs, ... }:
 let
   s = config.hostSettings;
-  laptop = hostname == "laptop";
+  # Only hosts with a battery run power-profiles-daemon (see hosts/laptop)
+  mobile = osConfig.services.power-profiles-daemon.enable;
   mood = "${config.xdg.configHome}/waybar/mood.sh";
 
   calendar = pkgs.writeShellScript "waybar-calendar" ''
@@ -35,7 +36,7 @@ in
       modules-center = [ "idle_inhibitor" "privacy" "clock" ];
       modules-right =
         [ "cpu" "memory" ]
-        ++ lib.optionals laptop [ "power-profiles-daemon" "battery" ]
+        ++ lib.optionals mobile [ "power-profiles-daemon" "battery" ]
         ++ [ "wireplumber" "bluetooth" "network" "tray" ];
 
       "hyprland/workspaces" = {

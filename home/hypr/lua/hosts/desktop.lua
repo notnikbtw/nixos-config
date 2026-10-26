@@ -1,5 +1,3 @@
--- Desktop: two 1440p monitors side by side
-
 hl.monitor({
     output   = "DP-1",
     mode     = "2560x1440@165.00",

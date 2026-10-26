@@ -1,5 +1,3 @@
--- Laptop: built-in 2.5K screen and the keys its Fn row sends
-
 local calcScript = os.getenv("HOME") .. "/.config/rofi/calc.sh"
 local hubMenu    = os.getenv("HOME") .. "/.config/rofi/hub.sh"
 

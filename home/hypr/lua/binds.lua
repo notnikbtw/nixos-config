@@ -143,13 +143,3 @@ hl.bind(mainMod .. " + SHIFT + comma", hl.dsp.exec_cmd(
     'cliphist wipe && notify-send "Clipboard" "History cleared"'
 ))
 
--- Laptop-only
-local handle   = io.popen("hostname")
-local hostname = handle:read("*l")
-handle:close()
-
-if hostname == "laptop" then
-  hl.bind("F12", hl.dsp.exec_cmd(calcScript))
-  hl.bind("F10", hl.dsp.exec_cmd([[sh -c 'loginctl lock-session; sleep 1; hyprctl dispatch "hl.dsp.dpms({ action = \"off\" })"']]), { locked = true })
-  hl.bind("F9", hl.dsp.exec_cmd(hubMenu .. " settings"))
-end
