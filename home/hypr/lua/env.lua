@@ -2,12 +2,14 @@ local handle   = io.popen("hostname")
 local hostname = handle:read("*l")
 handle:close()
 
+local cursor = require("cursor")
+
 hl.config({
   env = {
-    "XCURSOR_THEME,Adwaita",
-    "HYPRCURSOR_THEME,Adwaita",
-    "XCURSOR_SIZE,24",
-    "HYPRCURSOR_SIZE,24",
+    "XCURSOR_THEME," .. cursor.name,
+    "HYPRCURSOR_THEME," .. cursor.name,
+    "XCURSOR_SIZE," .. cursor.size,
+    "HYPRCURSOR_SIZE," .. cursor.size,
     "XDG_SESSION_TYPE,wayland",
     "OZONE_PLATFORM,wayland",
     "ELECTRON_OZONE_PLATFORM_HINT,wayland",

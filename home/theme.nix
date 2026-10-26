@@ -1,13 +1,25 @@
 { config, pkgs, ... }:
+let
+  cursor = config.home.pointerCursor;
+  gtkSettings = builtins.readFile ./themes/gruvbox/gtk3.ini + ''
+    gtk-cursor-theme-name=${cursor.name}
+    gtk-cursor-theme-size=${toString cursor.size}
+  '';
+in
 {
   home.pointerCursor = {
     enable = true;
     gtk.enable = true;
     x11.enable = true;
     hyprcursor.enable = true;
-    name = "Adwaita";
-    package = pkgs.adwaita-icon-theme;
-    size = 24;
+    name = "MeguminCursor";
+    package = pkgs.runCommand "megumin-cursor" { } ''
+      mkdir -p $out/share/icons
+      cp -r ${./cursors/MeguminCursor} $out/share/icons/MeguminCursor
+      chmod -R u+w $out/share/icons/MeguminCursor
+      sed -i '/^Inherits=/d' $out/share/icons/MeguminCursor/index.theme
+    '';
+    size = 32;
   };
 
   home.packages = with pkgs; [
@@ -23,7 +35,8 @@
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       icon-theme = "Papirus-Dark";
-      cursor-theme = "Adwaita";
+      cursor-theme = cursor.name;
+      cursor-size = cursor.size;
       color-scheme = "prefer-dark";
       font-name = "${config.hostSettings.uiFontFamily} ${toString config.hostSettings.fontSize}";
       document-font-name = "${config.hostSettings.uiFontFamily} ${toString config.hostSettings.fontSize}";
@@ -43,6 +56,6 @@
 
   xdg.configFile."themes/current".source = ./themes/gruvbox;
 
-  xdg.configFile."gtk-3.0/settings.ini".source = ./themes/gruvbox/gtk3.ini;
-  xdg.configFile."gtk-4.0/settings.ini".source = ./themes/gruvbox/gtk3.ini;
+  xdg.configFile."gtk-3.0/settings.ini".text = gtkSettings;
+  xdg.configFile."gtk-4.0/settings.ini".text = gtkSettings;
 }

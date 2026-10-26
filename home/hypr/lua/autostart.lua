@@ -6,7 +6,8 @@ hl.on("hyprland.start", function()
     "systemctl --user start hyprpolkitagent && " ..
     "systemctl --user restart xdg-desktop-portal-hyprland xdg-desktop-portal"
   )
-  hl.exec_cmd("hyprctl setcursor Adwaita 24")
+  local cursor = require("cursor")
+  hl.exec_cmd("hyprctl setcursor " .. cursor.name .. " " .. cursor.size)
 
   local initSession = os.getenv("HOME") .. "/.config/hypr/scripts/init-session.sh"
   hl.exec_cmd(initSession .. " &")
