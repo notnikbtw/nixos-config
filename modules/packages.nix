@@ -4,7 +4,6 @@
     telegram-desktop
     librewolf
     wget
-    btop
     imv
     p7zip
     unzip
@@ -36,7 +35,6 @@
     brightnessctl
     playerctl
     networkmanagerapplet
-    blueman
     syncthingtray
     pavucontrol
     file-roller

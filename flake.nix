@@ -19,9 +19,9 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, llm-agents, ... }@inputs:
+  outputs = { nixpkgs, home-manager, nixos-hardware, ... }@inputs:
   let
-    mkHost = { hostname, extraModules ? [] }:
+    mkHost = { hostname }:
       nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = { inherit inputs nixos-hardware; };
@@ -51,7 +51,7 @@
             home-manager.extraSpecialArgs = { inherit inputs hostname; };
             home-manager.users.nik = import ./home/home.nix;
           }
-        ] ++ extraModules;
+        ];
       };
   in
   {

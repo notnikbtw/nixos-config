@@ -1,4 +1,4 @@
-{ config, pkgs, nixos-hardware, ... }:
+{ config, nixos-hardware, ... }:
 {
   imports = [ nixos-hardware.nixosModules.lenovo-ideapad-16ach6 ];
 

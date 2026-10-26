@@ -46,22 +46,12 @@
       noto-fonts
       noto-fonts-color-emoji
     ];
-    # Default font choices live in home/settings.nix (applied via home/theme.nix)
+    # Default font live in home/settings.nix
   };
 
-  xdg.portal = {
-    enable = true;
-    # programs.hyprland already adds the hyprland and gtk portals;
-    # listing them here again makes the build fail (duplicate user units)
-    config = {
-      common = {
-        default = [ "hyprland" "gtk" ];
-      };
-      hyprland = {
-        default = [ "hyprland" "gtk" ];
-      };
-    };
-  };
+  # programs.hyprland already adds the hyprland and gtk portals and their
+  # config (hyprland first, then gtk); listing them again breaks the build
+  xdg.portal.enable = true;
 
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
