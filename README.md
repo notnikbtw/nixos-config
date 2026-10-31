@@ -30,7 +30,6 @@ My personal modular NixOS configuration for desktop and laptop running Hyprland
 - **Multiplexer:** Tmux (truecolor, manual session management via `ta` / `tls`)
 - **Screen Recording & Capture:** `wf-recorder` (NVIDIA DMA-BUF buffer support), Grim, Slurp, Swappy
 - **Storage:** Btrfs on LUKS (zstd compression, `noatime`, monthly scrub), Snapper snapshots of `/home`, zram swap
-- **AI Stack:** Docker Ollama, `llm-agents.nix` (`opencode`, `antigravity-cli`, `claude-code`)
 - **Wallpaper Daemon:** `awww`
 - **Theming:** Gruvbox, applied declaratively across GTK, Qt, Kitty, Waybar, Dunst, Starship, Btop, Rofi, and Hyprland
 
@@ -39,10 +38,6 @@ My personal modular NixOS configuration for desktop and laptop running Hyprland
 - `home/settings.nix` defines the font families (`fontFamily`, `uiFontFamily`) and the size profiles (`profiles.desktop`, `profiles.laptop`).
 - Home Manager selects a profile based on the hostname and passes the fonts and sizes to programs such as Kitty and Rofi, etc., so font names are specified in only one place.
 - Other per-host differences live in `hosts/<hostname>/`
-
-## Keybindings
-
-All keybindings (main modifier: `Super`) are defined in [`home/hypr/lua/binds.lua`](home/hypr/lua/binds.lua).
 
 ## Storage & Snapshots
 

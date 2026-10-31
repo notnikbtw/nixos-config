@@ -66,7 +66,7 @@
     hicolor-icon-theme
   ]) ++ (with inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}; [
     opencode
-    antigravity-cli
+    codex
     claude-code
   ]);
 }

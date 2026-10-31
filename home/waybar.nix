@@ -45,8 +45,6 @@ in
         format = "{icon}";
         format-icons = { active = "󰊠"; } // lib.genAttrs (map toString (lib.range 1 10)) (n: n);
         persistent-workspaces = lib.genAttrs (map toString (lib.range 1 5)) (_: [ ]);
-        on-scroll-up = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e-1\" })'";
-        on-scroll-down = "hyprctl dispatch 'hl.dsp.focus({ workspace = \"e+1\" })'";
       };
 
       idle_inhibitor = {
