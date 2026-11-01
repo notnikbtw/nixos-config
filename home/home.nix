@@ -16,6 +16,7 @@
     ./btop.nix
     ./firefox.nix
     ./fastfetch.nix
+    ./nvim.nix
   ];
 
   xdg.mimeApps = {

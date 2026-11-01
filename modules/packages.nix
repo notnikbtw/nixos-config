@@ -57,7 +57,6 @@
     gcc
     gnumake
     git
-    neovim
     docker-compose
     postgresql
     act
