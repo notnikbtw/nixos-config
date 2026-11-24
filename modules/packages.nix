@@ -1,10 +1,9 @@
 { pkgs, inputs, ... }:
 {
   environment.systemPackages = (with pkgs; [
-    telegram-desktop
     librewolf
     wget
-    imv
+    loupe
     p7zip
     unzip
     zip
@@ -19,6 +18,8 @@
     libreoffice
     exiftool
     mat2
+    anki
+    krita
 
     hyprlock
     awww
