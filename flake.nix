@@ -27,18 +27,6 @@
         specialArgs = { inherit inputs nixos-hardware; };
         modules = [
           ./hosts/${hostname}/configuration.nix
-          ./hosts/${hostname}/hardware-configuration.nix
-          ./hosts/${hostname}/gpu.nix
-
-          ./modules/nix.nix
-          ./modules/boot.nix
-          ./modules/filesystems.nix
-          ./modules/networking.nix
-          ./modules/users.nix
-          ./modules/desktop.nix
-          ./modules/programs.nix
-          ./modules/packages.nix
-          ./modules/services.nix
 
           { networking.hostName = hostname; }
 
@@ -49,7 +37,6 @@
             home-manager.backupFileExtension = "backup";
             home-manager.overwriteBackup = true;
             home-manager.extraSpecialArgs = { inherit inputs hostname; };
-            home-manager.users.nik = import ./home/home.nix;
           }
         ];
       };

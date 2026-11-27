@@ -13,7 +13,7 @@
     SUBVOLUME = "/home";
     TIMELINE_CREATE = true;
     TIMELINE_CLEANUP = true;
-    # Defaults (desktop)
+    # Defaults
     TIMELINE_LIMIT_HOURLY = lib.mkDefault 24;
     TIMELINE_LIMIT_DAILY = lib.mkDefault 14;
     TIMELINE_LIMIT_WEEKLY = lib.mkDefault 4;

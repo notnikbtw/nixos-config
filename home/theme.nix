@@ -11,7 +11,6 @@ in
     enable = true;
     gtk.enable = true;
     x11.enable = true;
-    hyprcursor.enable = true;
     name = "MeguminCursor";
     package = pkgs.runCommand "megumin-cursor" { } ''
       mkdir -p $out/share/icons
@@ -28,10 +27,6 @@ in
     adwaita-icon-theme
   ];
 
-  qt = {
-    enable = true;
-    platformTheme.name = "gtk3";
-  };
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       icon-theme = "Papirus-Dark";

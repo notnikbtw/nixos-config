@@ -4,10 +4,6 @@
 
   imports = [
     ./settings.nix
-    ./hypr.nix
-    ./waybar.nix
-    ./dunst.nix
-    ./rofi.nix
     ./kitty.nix
     ./zsh.nix
     ./tmux.nix
@@ -22,7 +18,6 @@
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
-      "inode/directory" = [ "thunar.desktop" ];
       "image/png" = [ "imv.desktop" ];
       "image/jpeg" = [ "imv.desktop" ];
       "image/gif" = [ "imv.desktop" ];
@@ -39,10 +34,5 @@
       "application/pdf" = [ "firefox.desktop" ];
       "text/plain" = [ "code.desktop" ];
     };
-  };
-
-  xfconf.settings.thunar = {
-    "misc-thumbnail-mode" = "THUNAR_THUMBNAIL_MODE_ALWAYS";
-    "misc-thumbnail-max-file-size" = 0;
   };
 }

@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
-  programs.dconf.enable = true;
-  
+  imports = [ ./screen-capture.nix ];
+
   services.greetd = {
     enable = true;
     settings = {
@@ -17,6 +17,13 @@
     xwayland.enable = true;
   };
 
+  environment.systemPackages = with pkgs; [
+    hyprlock
+    awww
+    hyprsunset
+    (rofi.override { plugins = [ rofi-calc ]; })
+  ];
+
   # Without UWSM nothing activates graphical-session.target, which
   # xdg-desktop-portal needs (screen sharing). autostart.lua starts this target.
   systemd.user.targets.hyprland-session = {
@@ -24,29 +31,6 @@
     bindsTo = [ "graphical-session.target" ];
     wants = [ "graphical-session-pre.target" ];
     after = [ "graphical-session-pre.target" ];
-  };
-
-  # Opens TCP/UDP 53317
-  programs.localsend.enable = true;
-
-  security.polkit.enable = true;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    wireplumber.enable = true;
-  };
-
-  fonts = {
-    enableDefaultPackages = true;
-    packages = with pkgs; [
-      nerd-fonts.fira-code
-      noto-fonts
-      noto-fonts-color-emoji
-    ];
-    # Default font live in home/settings.nix
   };
 
   # programs.hyprland already adds the hyprland and gtk portals and their

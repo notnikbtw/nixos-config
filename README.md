@@ -28,7 +28,7 @@ My personal modular NixOS configuration for desktop and laptop running Hyprland
 - **Terminal:** Kitty (GPU-accelerated, FiraCode Nerd Font)
 - **Shell & Prompt:** Zsh + Starship
 - **Multiplexer:** Tmux (truecolor, manual session management via `ta` / `tls`)
-- **Screen Recording & Capture:** `wf-recorder` (NVIDIA DMA-BUF buffer support), Grim, Slurp, Swappy
+- **Capture:** Grim, Slurp and Swappy
 - **Storage:** Btrfs on LUKS (zstd compression, `noatime`, monthly scrub), Snapper snapshots of `/home`, zram swap
 - **Wallpaper Daemon:** `awww`
 - **Theming:** Gruvbox, applied declaratively across GTK, Qt, Kitty, Waybar, Dunst, Starship, Btop, Rofi, and Hyprland

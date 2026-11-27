@@ -1,7 +1,6 @@
 { ... }:
 {
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
     warn-dirty = false;
     substituters = [
@@ -13,16 +12,6 @@
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
     trusted-users = [ "root" "@wheel" ];
-  };
-
-  programs.nh = {
-    enable = true;
-    flake = "/home/nik/.config/nixos";
-    clean = {
-      enable = true;
-      dates = "weekly";
-      extraArgs = "--keep 5";
-    };
   };
 
   nixpkgs.config.allowUnfree = true;
