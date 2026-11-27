@@ -7,7 +7,7 @@
     ../../profiles/nixos/common.nix
     ../../modules/nixos/nix-policy.nix
     ../../profiles/nixos/workstation.nix
-    ../../modules/nixos/desktop/hyprland.nix
+    ../../modules/nixos/desktop/plasma.nix
     ../../users/nik
     ../../users/tux
     ../../modules/nixos/zsh.nix
@@ -31,8 +31,7 @@
   home-manager.users.nik = {
     imports = [
       ../../home/home.nix
-      ../../profiles/home/hyprland.nix
-      ../../modules/home/desktop/thunar.nix
+      ../../profiles/home/plasma.nix
     ];
   };
 
